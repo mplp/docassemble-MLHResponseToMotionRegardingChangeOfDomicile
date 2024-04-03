@@ -491,7 +491,7 @@ attachments:
     pdf template file: foc_116_response_to_motion_regarding_change_of_domicile.pdf
     fields:
       - "trail_court": ${ the_court.number }
-      - "trail_court_county": ${ county_choice }
+      - "trail_court_county": ${ county_choice.upper() }
       - "docket_numbers": ${docket_numbers}
       - "trial_court_phone_number": ${ the_court.phone }
       - "trial_court_address_on_one_line": ${ the_court.address.on_one_line() }
