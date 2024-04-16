@@ -1,7 +1,7 @@
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.mlhframework:mlh_interview_framework.yml
-  - review.yml
+  - docassemble.ALToolbox:collapse_template.yml
 ---
 metadata:
   title: Response to Motion Regarding Change of Domicile
@@ -46,9 +46,11 @@ mandatory: True
 code: |
   nav.set_section("review_intro")
   intro_screen
+  intro_screen_2
+  intro_screen_3
   MLH_standard_intro_pages
   nav.set_section("personal_info")
-  if personal_info_checking:
+  if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
     if qualify_to_RMRCD:
       if third_party_check:
@@ -169,9 +171,9 @@ subquestion: |
   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
 continue button field: intro_screen_3
 ---
-id: personal_info
+id: MLH intro PII
 question: |
-  To protect privacy, you cannot include personal identifying information in public documents that are filed in court.
+  To protect privacy, you **cannot** include personal identifying information in public documents that are filed in court.
 subquestion: |
   Personal identifying information includes:
 
@@ -181,11 +183,12 @@ subquestion: |
   * Passport number
   * Financial account numbers
 
-  *If a question doesn't specifically ask for personal identifying information, do not include it in your answers.* When this information is necessary, this tool will specifically ask for the information and it will go on a separate non-public form that you will file along with the other documents. This DIY tool will automatically produce that form if you need it.
+  **Don’t** put any personal identifying information in your answers **unless we specifically ask for it.**
+
 fields:
-  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: personal_info_checking
+  - Do you understand that you should **not** enter any personal identifying information **unless** this tool specifically asks for it?: MLH_intro_agree_no_pii
     datatype: yesnoradio
-continue button field: personal_info
+
 ---
 id: existing_case_kickout
 event: existing_case_kickout
@@ -219,7 +222,7 @@ event: response_case_kickout
 question: |
   We’re sorry, you cannot use this tool if you aren’t responding to a Motion Regarding Change of Domicile/Legal Residence in an existing Michigan case.
 subquestion: |
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the https://michiganlegalhelp.org/guide-to-legal-help on Michigan Legal Help to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) on Michigan Legal Help to find a lawyer or a legal services office near you.
 
   If you think you made a mistake, you can change the answer to this question.
 ---
@@ -230,15 +233,30 @@ question: |
 subquestion: |
   This tool may only be used to file a Response to Motion Regarding Change of Domicile/Legal Residence in a Michigan family law case between two parents, with no third party involvement.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the https://michiganlegalhelp.org/guide-to-legal-help to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
   If you think you made a mistake, you can change the answer to this question.
+---
+id: Choose a court
+question: |
+  In which county is your family law case happening?
+subquestion: |
+  ${ collapse_template(county_explanation) }
+fields:
+  - County: county_choice
+    code: court_list._load_courts()["address_county"].unique()
+---
+template: county_explanation
+subject: |
+  How do I know which county my case is in?
+content: |
+  You can find the case number, county and court by looking at the top of court papers from your case such as the summons, complaint, petition, or answer in your case.
 ---
 id: docket number
 question: |
   What is your case number?
 subquestion: |
-  Enter the case number from your divorce case, custody case, or other family support case.
+  Enter the Case Number from your family law case.
 
   ${ collapse_template(where_case_number) }
 fields:
@@ -311,7 +329,7 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  For the following, please enter a *SAFE* address and telephone number where the court can contact you. *DO NOT* enter an address or phone number that you want to keep confidential from the ${user_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${user_des}.
+  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${user_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${user_des}.
 
   If you don't want the ${user_des} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
 fields:
@@ -339,9 +357,9 @@ sets:
   - other_parties[0].name.suffix
 question: |
   % if user_ask_role == "plaintiff":
-  Enter the *Defendant's* name.
+  Enter the **Defendant's** name.
   % else:
-  Enter the *Plaintiff's* name.
+  Enter the **Plaintiff's** name.
   % endif
 fields:
   - code: |
@@ -524,7 +542,7 @@ objects:
 ---
 attachment:
   variable name: rmrcd_main.addendum
-  docx template file: motion_re_cod_attachment_1.docx
+  docx template file: motion_re_cod_attachment.docx
 ---
 code: |
   rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 640
@@ -597,9 +615,8 @@ attachments:
     - signature_date: ${ today(format='M/d/YYYY') if esign else ""}
     - users2_signature: |
         ${f"/s/ {users[0]}" if esign else ""}
-    - signature_date_2: ${ today(format='M/d/YYYY') if esign else ""}
-    - users2_signature_2: |
-        ${f"/s/ {users[0]}" if esign else ""}
+    - signature_date_2:
+    - users2_signature_2:
     - form_instructions: ${form_instructions}
 ---
 
