@@ -48,7 +48,10 @@ code: |
   intro_screen
   intro_screen_2
   intro_screen_3
-  MLH_standard_intro_pages
+  MLH_intro_landing
+  MLH_intro_navigation
+  MLH_intro_saving_answers
+  MLH_intro_time
   nav.set_section("personal_info")
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
