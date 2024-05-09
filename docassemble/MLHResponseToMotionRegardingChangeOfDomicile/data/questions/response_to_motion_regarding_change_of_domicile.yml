@@ -1,6 +1,7 @@
- include:
+include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.mlhframework:mlh_interview_framework.yml
+  - docassemble.ALToolbox:collapse_template.yml
 ---
 metadata:
   title: Response to Motion Regarding Change of Domicile
@@ -17,16 +18,14 @@ metadata:
 ---
 features:
   labels above fields: True
-
+  navigation: True
 ---
 code: |
   al_form_type = "existing_case"
 ---
 objects:
-
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
-
 ---
 #################### Interview Order Start #####################
 ---
@@ -49,8 +48,12 @@ code: |
   intro_screen
   intro_screen_2
   intro_screen_3
+  MLH_intro_landing
+  MLH_intro_navigation
+  MLH_intro_saving_answers
+  MLH_intro_time
   nav.set_section("personal_info")
-  if personal_info_checking:
+  if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
     if qualify_to_RMRCD:
       if third_party_check:
@@ -76,6 +79,7 @@ code: |
         nav.set_section("review_parenting_time_info")
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
+        efile_notice
         if esign:
           signature_date
         response_motion_re_change_of_domicile_download
@@ -114,70 +118,80 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-
 id: intro_screen
 question: |
-  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion to Change Domicile/Residence tool.  
+  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion to Change Domicile/Residence tool.
 subquestion: |
   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
 
   If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
 continue button field: intro_screen
+
+---
+id: MLH_intro_landing
+continue button field: MLH_intro_landing
+question: |
+  Need more help?
+subquestion: |
+  This tool will help you prepare forms for your legal issue without a lawyer.
+   
+  ${ MLH_GUIDE_FULL }
 ---
 id: intro_screen_2
 question: |
-  A parent may also need permission from the court to move within Michigan. 
-subquestion: |  
+  A parent may also need permission from the court to move within Michigan.
+subquestion: |
   This depends on things like:
-  
+
   * The custody and parenting time arrangements ${"\n"}
   * How far the proposed move is${"\n"}
   * How far the parents lived from one another when the case started${"\n"}
   * Whether the other parent agrees to the move
-  
+
   If your child’s other parent has filed a Motion Regarding Change of Domicile/Legal Residence asking the court to move, you can file a response. The court will have a hearing where the other parent can talk about why they want to move, and you can talk about why you object.
 
-  To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
+  To learn more about what to do if your child’s other parent wants to move with your child, read https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile.
 
   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
 continue button field: intro_screen_2
 ---
 id: intro_screen_3
 question: |
-  You will be asked questions about yourself and the other parent. 
-subquestion: |  
+  You will be asked questions about yourself and the other parent.
+subquestion: |
   On the court forms, the other party is called the moving party because they are the person filing the motion.
-  
+
   You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-  
+
   This tool should take you between forty minutes and one hour to finish.
 
   After you answer all the questions, you will be ready to download or print a:
     
-   • *Response to Motion Regarding Change of Domicile/Legal Residence with Attachment*
+   • Response to Motion Regarding Change of Domicile/Legal Residence with Attachment
 
-  If you make a mistake, you can press the **Undo** button on the bottom of the screen. If you need to go back or forward several questions, use the outline on the left side of the screen.
+  If you make a mistake, you can press the *Undo* button on the bottom of the screen. If you need to go back or forward several questions, use the outline on the left side of the screen.
 
   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
 continue button field: intro_screen_3
 ---
-id: personal_info
+id: MLH intro PII
 question: |
-  To protect privacy, you cannot include personal identifying information in public documents that are filed in court. 
-subquestion: |  
+  To protect privacy, you **cannot** include personal identifying information in public documents that are filed in court.
+subquestion: |
   Personal identifying information includes:
-  
+
   * Date of birth
   * Social security or national identification number
   * Driver’s license or state identification number
   * Passport number
   * Financial account numbers
-  
-  **If a question doesn't specifically ask for personal identifying information, do not include it in your answers.** When this information is necessary, this tool will specifically ask for the information and it will go on a separate non-public form that you will file along with the other documents. This DIY tool will automatically produce that form if you need it.
+
+  **Don’t** put any personal identifying information in your answers **unless we specifically ask for it.**
+
 fields:
-  - Do you understand that you should not enter any personal identifying information unless this tool specifically asks for it?: personal_info_checking
+  - Do you understand that you should **not** enter any personal identifying information **unless** this tool specifically asks for it?: MLH_intro_agree_no_pii
     datatype: yesnoradio
-continue button field: personal_info
+
 ---
 id: existing_case_kickout
 event: existing_case_kickout
@@ -188,20 +202,21 @@ subquestion: |
 ---
 id: qualifying_questions
 question: |
-  Did your child's other parent file a Motion Regarding Change of Domicile/Residence in an existing Michigan family law case? 
+  Did your child's other parent file a Motion Regarding Change of Domicile/Residence in an existing Michigan family law case?
 subquestion: |
   This includes:
-  
+
    * Divorce
    * Separate maintenance
    * Paternity
    * Custody
    * Family support
-fields: 
+fields:
   - no label: qualify_to_RMRCD
     datatype: yesnoradio
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
+    show if: qualify_to_RMRCD
 continue button field: do_you_qualify_to_RMRCD
 
 ---
@@ -214,7 +229,6 @@ subquestion: |
 
   If you think you made a mistake, you can change the answer to this question.
 ---
-
 id: third_party_kickout
 event: third_party_kickout
 question: |
@@ -222,15 +236,32 @@ question: |
 subquestion: |
   This tool may only be used to file a Response to Motion Regarding Change of Domicile/Legal Residence in a Michigan family law case between two parents, with no third party involvement.
 
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help on Michigan Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
+  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
   If you think you made a mistake, you can change the answer to this question.
+---
+id: Choose a court
+question: |
+  In which county is your family law case happening?
+subquestion: |
+  ${ collapse_template(county_explanation) }
+fields:
+  - County: county_choice
+    code: court_list._load_courts()["address_county"].unique()
+---
+template: county_explanation
+subject: |
+  How do I know which county my case is in?
+content: |
+  You can find the case number, county and court by looking at the top of court papers from your case such as the summons, complaint, petition, or answer in your case.
 ---
 id: docket number
 question: |
   What is your case number?
 subquestion: |
-  Enter the case number from your divorce case, custody case, or other family support case.
+  Enter the Case Number from your family law case.
+
+  ${ collapse_template(where_case_number) }
 fields:
   - Case number: docket_numbers
     maxlength: 25
@@ -240,7 +271,7 @@ id: what is the user's role?
 question: |
   What party are you in your existing case?
 subquestion: |
-  You are called the “moving party” because you are the party filing the **Motion Regarding Change of Domicile**.  
+  You are called the “moving party” because you are the party filing the *Motion Regarding Change of Domicile*.  
 
   In your court case, you are either the Plaintiff or the Defendant.
 
@@ -251,13 +282,13 @@ fields:
       - I am the Plaintiff: plaintiff
       - I am the Defendant: defendant
   - note: |
-      Okay, you are the **Plaintiff** in this case. The other 
+      Okay, you are the *Plaintiff* in this case. The other 
       side is the Defendant.
     show if:
       variable: user_ask_role
       is: "plaintiff"
   - note: |
-      Okay, you are the **Defendant** in this case. The other 
+      Okay, you are the *Defendant* in this case. The other 
       side is the Plaintiff.
     show if:
       variable: user_ask_role
@@ -288,7 +319,6 @@ fields:
     datatype: date
     show if: prior_order_yesno
 
-
 ---
 id: your contact information
 sets:
@@ -303,7 +333,7 @@ question: |
   Your contact information
 subquestion: |
   For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${user_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${user_des}.
-  
+
   If you don't want the ${user_des} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
 fields:
   - Phone number: users[0].phone_number
@@ -350,10 +380,6 @@ sets:
   - other_parties[0].phone_number
 question: |
   Enter ${ other_parties[0].possessive('address') }.
-subquestion: |
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party_des}.
-  
-  If you don't want the ${other_party_des} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
 fields:
   - Phone number: other_parties[0].phone_number
   - code: |
@@ -364,10 +390,10 @@ id: allow a chage of domicile
 question: |
   Do you agree or disagree to allow a change of domicile or legal residence as requested in ${ other_parties[0].name }'s motion?
 fields:
-  - no label : agree_yes
+  - no label: agree_yes
     datatype: radio
     choices:
-      - I agree : agree
+      - I agree: agree
       - I disagree: disagree
 
 ---
@@ -378,7 +404,6 @@ code: |
   else:
     do_not_agree_yes = False
     agree_yes = True
-    
 ---
 id: disagree to the change of domicile intro
 question: |
@@ -396,7 +421,7 @@ fields:
 ---
 id: allow changes in domicile
 question: |
- Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?
+  Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?
 fields:
   - no label: allow_yes
     datatype: yesnoradio
@@ -405,7 +430,7 @@ fields:
     show if:
       variable: allow_yes
       is: False
-    
+
 ---
 code: |
   if not allow_yes:
@@ -414,13 +439,12 @@ code: |
   else:
     not_allow_yes = False
     allow_yes = True
-    
 ---
 id: continue_parenting_time
 question: |
   What do you want to ask the court to do about parenting time?
 fields:
-  - no label : continue_parenting_time_yes
+  - no label: continue_parenting_time_yes
     datatype: radio
     choices:
       - Continue the current parenting-time order
@@ -440,7 +464,7 @@ fields:
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"
-  
+
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -455,7 +479,35 @@ code: |
     continue_parenting_time = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
-    
+---
+id: efile note question
+question: |
+  Completing this process does not file your forms with the court
+subquestion: |
+  You need to file them at court in person, by mail, e-mail, or by e-filing.
+  If you are e-filing, you must use https://mifile.courts.michigan.gov/.
+  Read the instructions that you will get with your forms for more information.
+
+  ${ collapse_template(am_i_going_to_efile) }
+
+  This tool will create separate forms so you can more easily e-file using MiFILE, if you plan to e-file.
+
+  This means that *you may need to download multiple files to get all of the forms you will need*. At the end of this interview you will see a list of documents to download. Make sure you download each of them. 
+
+  You will also be able to get all forms you need by clicking the *Download Your Form(s)* button on the page at the end of this tool.
+
+continue button field: efile_notice
+---
+template: am_i_going_to_efile
+subject: |
+  How do I know if I am going to e-file?
+content: |
+  Not all courts offer e-filing at this time. To find out if your court has e-filing, read the
+  https://michiganlegalhelp.org/resources/mifile/what-e-filing article.
+  The article tells you how to find out which courts have e-filing and what kinds of cases those courts are accepting by e-filing.
+
+  Look for the two-letter case type code at the end of your case number.
+  (This could be DM, DC, DS, DP, or a different code.)
 ---
 id: Electronic signature question
 question: |
@@ -473,8 +525,6 @@ fields:
 id: download screen
 event: response_motion_re_change_of_domicile_download
 question: |
-  All done!
-subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
@@ -484,69 +534,92 @@ subquestion: |
   ${ al_user_bundle.download_list_html() }
 
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
-
-attachments:
-  - name: foc_116
-    filename: foc_116
-    pdf template file: foc_116_response_to_motion_regarding_change_of_domicile.pdf
-    fields:
-      - "trail_court": ${ the_court.number }
-      - "trail_court_county": ${ county_choice.upper() }
-      - "docket_numbers": ${docket_numbers}
-      - "trial_court_phone_number": ${ the_court.phone }
-      - "trial_court_address_on_one_line": ${ the_court.address.on_one_line() }
-      - "moving_party_yes": ${moving_party_yes}
-      - "moving_party2_yes": ${moving_party2_yes}
-      - "plaintiffs_address_block": |
-          % if user_ask_role == "plaintiff":
-          ${ users[0].address_block() }
-          % elif user_ask_role == "defendant":
-          ${ other_parties[0].address_block() }
-          % endif
-      - "defendants_address_block": |
-          % if user_ask_role == "defendant":
-          ${ users[0].address_block() }
-          % elif user_ask_role == "plaintiff":
-          ${ other_parties[0].address_block() }
-          % endif
-      - "moving party_3_yes": ${party_3_yes}
-      - "judgement_date": |
-          % if prior_order_yesno:
-          ${recent_order}
-          % else:
-          ${""}
-          % endif
-      - "third_party_address_block": ""
-      - "agree_yes": ${agree_yes}
-      - "do_not_agree_yes": ${do_not_agree_yes}
-      - "description_to_not_agree_change_of_domicile": |
-          % if do_not_agree_yes:
-          ${description_to_not_agree_change_of_domicile}
-          % else:
-          ${ "" }
-          % endif
-      - "allow_yes": ${allow_yes}
-      - "not_allow_yes": ${not_allow_yes}
-      - "description_2_to_not_allow_change_of_domicile": |
-          % if not allow_yes:
-          ${description_2_to_not_allow_change_of_domicile}
-          % elif allow_yes:
-          ${ "" }
-          % endif
-      - "continue_parenting_time_yes": ${continue_parenting_time}
-      - "modify_parenting_time_yes": ${modify_parenting_time_yes}
-      - "modifying_the_parentingtime_order_as_follows_yes": ${modifying_the_parentingtime_order_as_follows_yes}
-      - "description_to_modifying_the_parentingtime_order_as_follows": |
-          % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
-          ${description_to_modifying_the_parentingtime_order_as_follows}
-          % else:
-          ${ "" }
-          % endif
-      - "signature_date": ${ today(format='M/d/YYYY') if esign else ""}
-      - "users2_signature": |
-          ${f"/s/ {users[0]}" if esign else ""}
-      - "signature_date_2": ${ today(format='M/d/YYYY') if esign else ""}
-      - "users2_signature_2": |
-          ${f"/s/ {users[0]}" if esign else ""}
-      - "form_instructions": ${form_instructions}
 ---
+#################### Documents Start #####################
+---
+objects:
+  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile", filename="foc_116_response_to_motion_regarding_change_of_domicile.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+attachment:
+  variable name: rmrcd_main.addendum
+  docx template file: motion_re_cod_attachment.docx
+---
+code: |
+  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 640
+  rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].overflow_trigger = 340
+  rmrcd_main.overflow_fields['description_to_modifying_the_parentingtime_order_as_follows'].overflow_trigger = 440
+  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].label = "Continued from Paragraph 2:"
+  rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].label = "Continued from Paragraph 3:"
+  rmrcd_main.overflow_fields['description_to_modifying_the_parentingtime_order_as_follows'].label = "Continued from Paragraph 4:"
+  rmrcd_main.overflow_fields.gathered = True
+---
+attachments:
+  name: foc_116
+  filename: foc_116
+  variable name: rmrcd_main[i]
+  editable: False
+  pdf template file: foc_116_response_to_motion_regarding_change_of_domicile.pdf
+  fields:
+    - trial_court: ${ the_court.number }
+    - trial_court_county: ${ county_choice.upper() }
+    - docket_numbers: ${docket_numbers}
+    - trial_court_phone_number: ${ the_court.phone }
+    - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
+    - moving_party_yes: ${moving_party_yes}
+    - moving_party2_yes: ${moving_party2_yes}
+    - plaintiffs_address_block: |
+        % if user_ask_role == "plaintiff":
+        ${ users[0].address_block() }
+        % elif user_ask_role == "defendant":
+        ${ other_parties[0].address_block() }
+        % endif
+    - defendants_address_block: |
+        % if user_ask_role == "defendant":
+        ${ users[0].address_block() }
+        % elif user_ask_role == "plaintiff":
+        ${ other_parties[0].address_block() }
+        % endif
+    - moving party_3_yes: ${party_3_yes}
+    - judgement_date: |
+        % if prior_order_yesno:
+        ${recent_order}
+        % else:
+        ${""}
+        % endif
+    - third_party_address_block: ""
+    - agree_yes: ${agree_yes}
+    - do_not_agree_yes: ${do_not_agree_yes}
+    - description_to_not_agree_change_of_domicile: |
+        % if do_not_agree_yes:
+        ${ rmrcd_main.safe_value('description_to_not_agree_change_of_domicile') }
+        % else:
+        ${ "" }
+        % endif
+    - allow_yes: ${allow_yes}
+    - not_allow_yes: ${not_allow_yes}
+    - description_2_to_not_allow_change_of_domicile: |
+        % if not allow_yes:
+        ${ rmrcd_main.safe_value('description_2_to_not_allow_change_of_domicile') }
+        % elif allow_yes:
+        ${ "" }
+        % endif
+    - continue_parenting_time_yes: ${continue_parenting_time}
+    - modify_parenting_time_yes: ${modify_parenting_time_yes}
+    - modifying_the_parentingtime_order_as_follows_yes: ${modifying_the_parentingtime_order_as_follows_yes}
+    - description_to_modifying_the_parentingtime_order_as_follows: |
+        % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
+        ${ rmrcd_main.safe_value('description_to_modifying_the_parentingtime_order_as_follows') }
+        % else:
+        ${ "" }
+        % endif
+    - signature_date: ${ today(format='M/d/YYYY') if esign else ""}
+    - users2_signature: |
+        ${f"/s/ {users[0]}" if esign else ""}
+    - signature_date_2:
+    - users2_signature_2:
+    - form_instructions: ${form_instructions}
+---
+
