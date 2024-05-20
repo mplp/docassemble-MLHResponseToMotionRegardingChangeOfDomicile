@@ -41,6 +41,10 @@ sections:
   - review_parenting_time_info: "Parenting Time"
   - review_conclusion: "Conclusion"
 ---
+id: interview config code block
+code: |
+  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
+---
 id: interview_order_response_to_motion_regarding_change_of_domicile
 mandatory: True
 code: |
