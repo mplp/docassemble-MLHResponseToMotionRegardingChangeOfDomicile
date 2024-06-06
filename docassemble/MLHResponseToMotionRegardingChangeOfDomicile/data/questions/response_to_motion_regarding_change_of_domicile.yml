@@ -23,6 +23,18 @@ features:
 code: |
   al_form_type = "existing_case"
 ---
+code: |
+  MLH_time_min = "40"
+  MLH_time_max = "60"
+---
+code: |
+  MLH_materials_included = True      
+---
+template: MLH_materials             
+content: |
+  * A copy of the most recent custody order
+  * A copy of the other parent's *Motion to Change Domicile/Residence* 
+---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -51,11 +63,10 @@ code: |
   nav.set_section("review_intro")
   intro_screen
   intro_screen_2
-  intro_screen_3
-  MLH_intro_landing
+  MLH_intro_time
+  MLH_agree_terms
   MLH_intro_navigation
   MLH_intro_saving_answers
-  MLH_intro_time
   nav.set_section("personal_info")
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
@@ -122,79 +133,37 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-id: intro_screen
+id: intro_screen FirstScreen
 question: |
-  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion to Change Domicile/Residence tool.
+  Welcome to the Response to Motion to Change Domicile/Residence tool.
 subquestion: |
   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
+  
+  This tool will ask you questions to make sure this form is right for you. It will use your answers to fill out the form. 
+  
+  On the court forms, the other party is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
 
-  If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
 continue button field: intro_screen
 
 ---
-id: MLH_intro_landing
-continue button field: MLH_intro_landing
-question: |
-  Need more help?
-subquestion: |
-  This tool will help you prepare forms for your legal issue without a lawyer.
-   
-  ${ MLH_GUIDE_FULL }
----
 id: intro_screen_2
 question: |
-  A parent may also need permission from the court to move within Michigan.
-subquestion: |
-  This depends on things like:
+  If Your Child's Other Parent Wants to Move
+subquestion: |  
+  If there is a custody or parenting time order for your child, the other parent **must** get the court’s approval before moving his or her residence **outside Michigan**.
 
-  * The custody and parenting time arrangements ${"\n"}
-  * How far the proposed move is${"\n"}
-  * How far the parents lived from one another when the case started${"\n"}
+  A parent may also need permission from the court to move **within Michigan**. This depends on things like:
+
+  * The custody and parenting time arrangements 
+  * How far the proposed move is
+  * How far the parents lived from one another when the case started
   * Whether the other parent agrees to the move
 
-  If your child’s other parent has filed a Motion Regarding Change of Domicile/Legal Residence asking the court to move, you can file a response. The court will have a hearing where the other parent can talk about why they want to move, and you can talk about why you object.
+  If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you object.
 
-  To learn more about what to do if your child’s other parent wants to move with your child, read https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile.
+  To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
 continue button field: intro_screen_2
----
-id: intro_screen_3
-question: |
-  You will be asked questions about yourself and the other parent.
-subquestion: |
-  On the court forms, the other party is called the moving party because they are the person filing the motion.
-
-  You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-
-  This tool should take you between forty minutes and one hour to finish.
-
-  After you answer all the questions, you will be ready to download or print a:
-    
-   • Response to Motion Regarding Change of Domicile/Legal Residence with Attachment
-
-  If you make a mistake, you can press the *Undo* button on the bottom of the screen. If you need to go back or forward several questions, use the outline on the left side of the screen.
-
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
-continue button field: intro_screen_3
----
-id: MLH intro PII
-question: |
-  To protect privacy, you **cannot** include personal identifying information in public documents that are filed in court.
-subquestion: |
-  Personal identifying information includes:
-
-  * Date of birth
-  * Social security or national identification number
-  * Driver’s license or state identification number
-  * Passport number
-  * Financial account numbers
-
-  **Don’t** put any personal identifying information in your answers **unless we specifically ask for it.**
-
-fields:
-  - Do you understand that you should **not** enter any personal identifying information **unless** this tool specifically asks for it?: MLH_intro_agree_no_pii
-    datatype: yesnoradio
 
 ---
 id: existing_case_kickout
@@ -526,7 +495,7 @@ fields:
   - Would you like to add your electronic signature to your form?: esign
     datatype: yesnoradio
 ---
-id: download screen
+id: DownloadScreen
 event: response_motion_re_change_of_domicile_download
 question: |
   Thank you ${users}. Your form is ready to download and deliver.
