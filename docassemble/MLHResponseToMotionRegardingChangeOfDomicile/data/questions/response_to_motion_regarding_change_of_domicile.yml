@@ -35,6 +35,9 @@ content: |
   * A copy of the most recent custody order
   * A copy of the other parent's *Motion to Change Domicile/Residence* 
 ---
+code: |
+  MLH_multiple_forms = False
+---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -94,8 +97,9 @@ code: |
         nav.set_section("review_parenting_time_info")
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
-        efile_notice
-        if esign:
+        MLH_outro_filing_information
+        MLH_outro_saving_answers
+        if MLH_esign:
           signature_date
         response_motion_re_change_of_domicile_download
     else:
@@ -159,7 +163,7 @@ subquestion: |
   * How far the parents lived from one another when the case started
   * Whether the other parent agrees to the move
 
-  If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you object.
+  If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
 
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
@@ -482,22 +486,11 @@ content: |
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
 ---
-id: Electronic signature question
-question: |
-  Electronic Signature
-subquestion: |
-  This tool can put "*/s/ ${ users[0] }*" where you would sign your name so you do not have to sign the form by hand. The court will accept this as your signature.
-
-  If you plan to e-file, you may want to add your electronic signature, otherwise you will need to print your forms, sign them by hand, and then scan them.
-
-  ${ collapse_template(efiling_info_template) }
-fields:
-  - Would you like to add your electronic signature to your form?: esign
-    datatype: yesnoradio
----
 id: DownloadScreen
 event: response_motion_re_change_of_domicile_download
 question: |
+  Get your forms
+subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
@@ -588,9 +581,9 @@ attachments:
         % else:
         ${ "" }
         % endif
-    - signature_date: ${ today(format='M/d/YYYY') if esign else ""}
+    - signature_date: ${ today(format='M/d/YYYY') if MLH_esign else ""}
     - users2_signature: |
-        ${f"/s/ {users[0]}" if esign else ""}
+        ${f"/s/ {users[0]}" if MLH_esign else ""}
     - signature_date_2:
     - users2_signature_2:
     - form_instructions: ${form_instructions}
