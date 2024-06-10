@@ -124,7 +124,7 @@ code: |
 ---
 id: intro_screen
 question: |
-  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion to Change Domicile/Residence tool.
+  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
 subquestion: |
   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
 
@@ -152,11 +152,12 @@ subquestion: |
   * How far the parents lived from one another when the case started${"\n"}
   * Whether the other parent agrees to the move
 
-  If your child’s other parent has filed a Motion Regarding Change of Domicile/Legal Residence asking the court to move, you can file a response. The court will have a hearing where the other parent can talk about why they want to move, and you can talk about why you object.
+  If your child’s other parent has filed a Motion Regarding Change of Domicile/Legal Residence asking the court to move, you can file a response. The court will have a hearing where the other parent can talk about why they want to move, and you can talk about why you disagree.
 
-  To learn more about what to do if your child’s other parent wants to move with your child, read https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile.
+  To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
+  
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
+  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion Regarding Change of Domicile/Legal Residence while you’re using this tool.
 continue button field: intro_screen_2
 ---
 id: intro_screen_3
@@ -175,7 +176,7 @@ subquestion: |
 
   If you make a mistake, you can press the *Undo* button on the bottom of the screen. If you need to go back or forward several questions, use the outline on the left side of the screen.
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion to Change Domicile/Residence while you’re using this tool.
+  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion Regarding Change of Domicile/Legal Residence while you’re using this tool.
 continue button field: intro_screen_3
 ---
 id: MLH intro PII
@@ -206,30 +207,36 @@ subquestion: |
 ---
 id: qualifying_questions
 question: |
-  Did your child's other parent file a Motion Regarding Change of Domicile/Residence in an existing Michigan family law case?
-subquestion: |
-  This includes:
-
-   * Divorce
-   * Separate maintenance
-   * Paternity
-   * Custody
-   * Family support
+  Can you use this tool?
 fields:
-  - no label: qualify_to_RMRCD
+  - Did your child's other parent file a Motion Regarding Change of Domicile/Residence in an existing Michigan family law case?: qualify_to_RMRCD
     datatype: yesnoradio
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
-    show if: qualify_to_RMRCD
+    show if: qualify_to_RMRCD 
+  - note: |
+      ${ collapse_template(RMRCD) }
 continue button field: do_you_qualify_to_RMRCD
-
+  
+---
+template: RMRCD
+subject: |
+  What kind of family law cases count?
+content: |
+  This includes:
+  
+     * Divorce
+     * Separate maintenance
+     * Paternity
+     * Custody
+     * Family support
 ---
 id: response_case_kickout
 event: response_case_kickout
 question: |
-  We’re sorry, you cannot use this tool if you aren’t responding to a Motion Regarding Change of Domicile/Legal Residence in an existing Michigan case.
+  We’re sorry, but you cannot use this tool!
 subquestion: |
-  We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) on Michigan Legal Help to find a lawyer or a legal services office near you.
+  You can only use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) on Michigan Legal Help to find a lawyer or a legal services office near you.
 
   If you think you made a mistake, you can change the answer to this question.
 ---
@@ -392,9 +399,10 @@ continue button field: other_party_contact_information
 ---
 id: allow a chage of domicile
 question: |
-  Do you agree or disagree to allow a change of domicile or legal residence as requested in ${ other_parties[0].name }'s motion?
+  Do you agree with ${ other_parties[0].name }'s request to move?
 fields:
-  - no label: agree_yes
+  - Do you agree that it is in the best interests of the child(ren) to allow a change of domicile or legal residence?: agree_yes
+  
     datatype: radio
     choices:
       - I agree: agree
@@ -434,7 +442,6 @@ fields:
     show if:
       variable: allow_yes
       is: False
-
 ---
 code: |
   if not allow_yes:
@@ -446,9 +453,9 @@ code: |
 ---
 id: continue_parenting_time
 question: |
-  What do you want to ask the court to do about parenting time?
+  Parenting Time
 fields:
-  - no label: continue_parenting_time_yes
+  - What do you want to ask the court to do about parenting time?: continue_parenting_time_yes
     datatype: radio
     choices:
       - Continue the current parenting-time order
@@ -456,6 +463,7 @@ fields:
       - Change the current parenting time order in a different way I will specify
   - Explain what you propose the new parenting time arrangements be. Use complete sentences.: description_to_modifying_the_parentingtime_order_as_follows
     input type: area
+    default: "I want the court to order the following parenting time arrangements: "  
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"
@@ -576,15 +584,19 @@ attachments:
     - moving_party2_yes: ${moving_party2_yes}
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
-        ${ users[0].address_block() }
+        ${ users[0].address_block() } 
+        ${ users[0].phone_number }
         % elif user_ask_role == "defendant":
-        ${ other_parties[0].address_block() }
+        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].phone_number }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
-        ${ users[0].address_block() }
+        ${ users[0].address_block() } 
+        ${ users[0].phone_number }
         % elif user_ask_role == "plaintiff":
-        ${ other_parties[0].address_block() }
+        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].phone_number }
         % endif
     - moving party_3_yes: ${party_3_yes}
     - judgement_date: |
