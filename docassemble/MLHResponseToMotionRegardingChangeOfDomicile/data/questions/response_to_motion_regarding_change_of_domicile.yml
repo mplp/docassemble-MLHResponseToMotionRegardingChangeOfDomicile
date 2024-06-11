@@ -461,7 +461,7 @@ fields:
       - Continue the current parenting-time order
       - Change the current parenting time order as stated in the other parent’s motion
       - Change the current parenting time order in a different way I will specify
-  - Explain what you propose the new parenting time arrangements be. Use complete sentences.: description_to_modifying_the_parentingtime_order_as_follows
+  - Explain what you propose the new parenting time arrangements be. Use complete sentences.: description_to_modifying_the_parentingtime_order_as_follows 
     input type: area
     default: "I want the court to order the following parenting time arrangements: "  
     show if:
@@ -475,8 +475,7 @@ fields:
       - I don't know
     show if:
       variable: continue_parenting_time_yes
-      is: "Change the current parenting time order in a different way I will specify"
-
+      is: "Change the current parenting time order in a different way I will specify"    
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -550,7 +549,7 @@ question: |
 #################### Documents Start #####################
 ---
 objects:
-  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile", filename="foc_116_response_to_motion_regarding_change_of_domicile.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
+  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile", filename="response_to_motion_regarding_change_of_domicile_foc_116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
@@ -573,8 +572,14 @@ attachments:
   filename: foc_116
   variable name: rmrcd_main[i]
   editable: False
-  pdf template file: foc_116_response_to_motion_regarding_change_of_domicile.pdf
+  pdf template file: response_to_motion_regarding_change_of_domicile_foc_116.pdf
   fields:
+    - persuant_to: |
+        % if MLH_esign:
+        ${ MLH_esign_tag }
+        % else: 
+        ${ '' }
+        % endif
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
     - docket_numbers: ${docket_numbers}
@@ -627,7 +632,15 @@ attachments:
     - modifying_the_parentingtime_order_as_follows_yes: ${modifying_the_parentingtime_order_as_follows_yes}
     - description_to_modifying_the_parentingtime_order_as_follows: |
         % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
-        ${ rmrcd_main.safe_value('description_to_modifying_the_parentingtime_order_as_follows') }
+        ${ rmrcd_main.safe_value('description_to_modifying_the_parentingtime_order_as_follows') }                                                                                
+          % if agree_to_new_parenting_time == True:
+            
+          ${ other_parties[0].name } agrees to this new parenting time schedule.
+          % else:
+            
+          ${ other_parties[0].name } does not agree to this new parenting time schedule.
+          % endif
+          
         % else:
         ${ "" }
         % endif
