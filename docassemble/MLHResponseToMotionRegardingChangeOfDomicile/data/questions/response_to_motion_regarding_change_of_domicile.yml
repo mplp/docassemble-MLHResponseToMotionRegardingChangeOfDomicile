@@ -633,12 +633,12 @@ attachments:
     - description_to_modifying_the_parentingtime_order_as_follows: |
         % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
         ${ rmrcd_main.safe_value('description_to_modifying_the_parentingtime_order_as_follows') }                                                                                
-          % if agree_to_new_parenting_time == True:
-            
+          % if agree_to_new_parenting_time == True and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
           ${ other_parties[0].name } agrees to this new parenting time schedule.
-          % else:
-            
+          % elif agree_to_new_parenting_time == False and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
           ${ other_parties[0].name } does not agree to this new parenting time schedule.
+          % elif rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640: 
+         I don’t know whether ${other_parties[0].name } agrees to this new parenting time schedule.
           % endif
           
         % else:
