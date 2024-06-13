@@ -306,13 +306,13 @@ fields:
       is: "defendant"
 validation code: |
   if user_ask_role == "plaintiff":
-    moving_party_yes = True
-    moving_party2_yes = False
+    moving_party_yes = False
+    moving_party2_yes = True
     other_party_role = "defendant"
     user_started_case = True
   elif user_ask_role == "defendant":
-    moving_party_yes = False
-    moving_party2_yes = True
+    moving_party_yes = True
+    moving_party2_yes = False
     other_party_role = "plaintiff"
     user_started_case = False
   else:
@@ -475,7 +475,8 @@ fields:
       - I don't know
     show if:
       variable: continue_parenting_time_yes
-      is: "Change the current parenting time order in a different way I will specify"    
+      is: "Change the current parenting time order in a different way I will specify"  
+
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
