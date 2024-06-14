@@ -36,6 +36,9 @@ content: |
   * A copy of the other parent's *Motion to Change Domicile/Residence* 
 ---
 code: |
+  MLH_welcome_message = "This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan."
+---
+code: |
   MLH_multiple_forms = False
 ---
 objects:
@@ -64,12 +67,10 @@ id: interview_order_response_to_motion_regarding_change_of_domicile
 mandatory: True
 code: |
   nav.set_section("review_intro")
-  intro_screen
+  MLH_intro_landing
   intro_screen_2
-  MLH_intro_time
   MLH_agree_terms
-  MLH_intro_navigation
-  MLH_intro_saving_answers
+  MLH_intro_navigate_save
   nav.set_section("personal_info")
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
@@ -137,19 +138,6 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-id: intro_screen FirstScreen
-question: |
-  Welcome to the Response to Motion to Change Domicile/Residence tool.
-subquestion: |
-  This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
-  
-  This tool will ask you questions to make sure this form is right for you. It will use your answers to fill out the form. 
-  
-  On the court forms, the other party is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-
-continue button field: intro_screen
-
----
 id: intro_screen_2
 question: |
   If Your Child's Other Parent Wants to Move
@@ -164,6 +152,8 @@ subquestion: |
   * Whether the other parent agrees to the move
 
   If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
+  
+  On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
 
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
