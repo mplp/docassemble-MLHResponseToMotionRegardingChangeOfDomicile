@@ -44,6 +44,7 @@ sections:
 id: interview config code block
 code: |
   github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
+  MLH_esign_supported = True
 ---
 id: interview_order_response_to_motion_regarding_change_of_domicile
 mandatory: True
@@ -122,7 +123,7 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-id: intro_screen
+id: FirstScreen
 question: |
   Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
 subquestion: |
@@ -157,7 +158,7 @@ subquestion: |
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
   
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion Regarding Change of Domicile/Legal Residence while you’re using this tool.
+  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
 continue button field: intro_screen_2
 ---
 id: intro_screen_3
@@ -170,13 +171,9 @@ subquestion: |
 
   This tool should take you between forty minutes and one hour to finish.
 
-  After you answer all the questions, you will be ready to download or print a:
-    
-   • Response to Motion Regarding Change of Domicile/Legal Residence with Attachment
+  After you answer all the questions, you will be ready to download or print a *Response to Motion Regarding Change of Domicile/Legal Residence*.
 
-  If you make a mistake, you can press the *Undo* button on the bottom of the screen. If you need to go back or forward several questions, use the outline on the left side of the screen.
-
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's Motion Regarding Change of Domicile/Legal Residence while you’re using this tool.
+  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
 continue button field: intro_screen_3
 ---
 id: MLH intro PII
@@ -209,7 +206,7 @@ id: qualifying_questions
 question: |
   Can you use this tool?
 fields:
-  - Did your child's other parent file a Motion Regarding Change of Domicile/Residence in an existing Michigan family law case?: qualify_to_RMRCD
+  - Did your child's other parent file a Motion Regarding Change of Domicile/Legal Residence in an existing Michigan family law case?: qualify_to_RMRCD
     datatype: yesnoradio
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
@@ -281,11 +278,8 @@ fields:
 id: what is the user's role?
 question: |
   What party are you in your existing case?
-subquestion: |
-  You are called the “moving party” because you are the party filing the *Motion Regarding Change of Domicile*.  
-
+subquestion: |  
   In your court case, you are either the Plaintiff or the Defendant.
-
 fields:
   - What party are you in your case?: user_ask_role
     datatype: radio
@@ -462,8 +456,7 @@ fields:
       - Change the current parenting time order as stated in the other parent’s motion
       - Change the current parenting time order in a different way I will specify
   - Explain what you propose the new parenting time arrangements be. Use complete sentences.: description_to_modifying_the_parentingtime_order_as_follows 
-    input type: area
-    default: "I want the court to order the following parenting time arrangements: "  
+    input type: area  
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"
@@ -534,9 +527,11 @@ fields:
   - Would you like to add your electronic signature to your form?: esign
     datatype: yesnoradio
 ---
-id: download screen
+id: DownloadScreen
 event: response_motion_re_change_of_domicile_download
 question: |
+  All done!
+subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
   View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
@@ -550,7 +545,7 @@ question: |
 #################### Documents Start #####################
 ---
 objects:
-  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile", filename="response_to_motion_regarding_change_of_domicile_foc_116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
+  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile - FOC 116", filename="Response Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
   - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
@@ -575,7 +570,7 @@ attachments:
   editable: False
   pdf template file: response_to_motion_regarding_change_of_domicile_foc_116.pdf
   fields:
-    - persuant_to: |
+    - pursuant_to: |
         % if MLH_esign:
         ${ MLH_esign_tag }
         % else: 
@@ -652,4 +647,3 @@ attachments:
     - users2_signature_2:
     - form_instructions: ${form_instructions}
 ---
-
