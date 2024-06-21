@@ -23,6 +23,27 @@ features:
 code: |
   al_form_type = "existing_case"
 ---
+id: interview config code block
+code: |
+  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
+  MLH_esign_supported = True
+  MLH_time_min = "40"
+  MLH_time_max = "60"
+---
+code: |
+  MLH_materials_included = True      
+---
+template: MLH_materials             
+content: |
+  * A copy of the most recent custody order
+  * A copy of the other parent's *Motion to Change Domicile/Residence* 
+---
+code: |
+  MLH_welcome_message = "This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan."
+---
+code: |
+  MLH_multiple_forms = False
+---
 objects:
   - users: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
   - other_parties: ALPeopleList.using(auto_gather=True, complete_attribute="complete", target_number=1)
@@ -41,22 +62,16 @@ sections:
   - review_parenting_time_info: "Parenting Time"
   - review_conclusion: "Conclusion"
 ---
-id: interview config code block
-code: |
-  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
-  MLH_esign_supported = True
----
 id: interview_order_response_to_motion_regarding_change_of_domicile
 mandatory: True
 code: |
   nav.set_section("review_intro")
-  intro_screen
   intro_screen_2
-  intro_screen_3
+  
   MLH_intro_landing
-  MLH_intro_navigation
-  MLH_intro_saving_answers
-  MLH_intro_time
+  intro_screen_2
+  MLH_agree_terms
+  MLH_intro_navigate_save
   nav.set_section("personal_info")
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
@@ -84,8 +99,10 @@ code: |
         nav.set_section("review_parenting_time_info")
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
-        efile_notice
-        signature_date
+        MLH_outro_filing_information
+        MLH_outro_saving_answers
+        if MLH_esign:
+          signature_date
         response_motion_re_change_of_domicile_download
     else:
        response_case_kickout
@@ -122,58 +139,58 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-id: FirstScreen
-question: |
-  Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
-subquestion: |
-  This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
+# id: FirstScreen
+# question: |
+#   Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
+# subquestion: |
+#   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
 
-  If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
-continue button field: intro_screen
-
+#   If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
+# continue button field: intro_screen
 ---
-id: MLH_intro_landing
-continue button field: MLH_intro_landing
-question: |
-  Need more help?
-subquestion: |
-  This tool will help you prepare forms for your legal issue without a lawyer.
+# id: MLH_intro_landing
+# continue button field: MLH_intro_landing
+# question: |
+#   Need more help?
+# subquestion: |
+#   This tool will help you prepare forms for your legal issue without a lawyer.
    
-  ${ MLH_GUIDE_FULL }
+#   ${ MLH_GUIDE_FULL }
 ---
 id: intro_screen_2
 question: |
-  A parent may also need permission from the court to move within Michigan.
+  If Your Child's Other Parent Wants to Move
 subquestion: |
-  This depends on things like:
+  If there is a custody or parenting time order for your child, the other parent **must** get the court’s approval before moving his or her residence **outside Michigan**.
+  
+  A parent may also need permission from the court to move **within Michigan**. This depends on things like:
 
-  * The custody and parenting time arrangements ${"\n"}
-  * How far the proposed move is${"\n"}
-  * How far the parents lived from one another when the case started${"\n"}
+  * The custody and parenting time arrangements 
+  * How far the proposed move is
+  * How far the parents lived from one another when the case started
   * Whether the other parent agrees to the move
 
-  If your child’s other parent has filed a Motion Regarding Change of Domicile/Legal Residence asking the court to move, you can file a response. The court will have a hearing where the other parent can talk about why they want to move, and you can talk about why you disagree.
-
-  To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
+  If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
   
+  On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
+  To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
 continue button field: intro_screen_2
 ---
-id: intro_screen_3
-question: |
-  You will be asked questions about yourself and the other parent.
-subquestion: |
-  On the court forms, the other party is called the moving party because they are the person filing the motion.
+# id: intro_screen_3
+# question: |
+#   You will be asked questions about yourself and the other parent.
+# subquestion: |
+#   On the court forms, the other party is called the moving party because they are the person filing the motion.
 
-  You may be the plaintiff or the defendant in the family law case where you’re filing this response.
+#   You may be the plaintiff or the defendant in the family law case where you’re filing this response.
 
-  This tool should take you between forty minutes and one hour to finish.
+#   This tool should take you between forty minutes and one hour to finish.
 
-  After you answer all the questions, you will be ready to download or print a *Response to Motion Regarding Change of Domicile/Legal Residence*.
+#   After you answer all the questions, you will be ready to download or print a *Response to Motion Regarding Change of Domicile/Legal Residence*.
 
-  This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
-continue button field: intro_screen_3
+#   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
+# continue button field: intro_screen_3
 ---
 id: MLH intro PII
 question: |
@@ -468,7 +485,6 @@ fields:
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"  
-
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -516,7 +532,7 @@ content: |
 id: DownloadScreen
 event: response_motion_re_change_of_domicile_download
 question: |
-  All done!
+  Get your forms
 subquestion: |
   Thank you ${users}. Your form is ready to download and deliver.
 
