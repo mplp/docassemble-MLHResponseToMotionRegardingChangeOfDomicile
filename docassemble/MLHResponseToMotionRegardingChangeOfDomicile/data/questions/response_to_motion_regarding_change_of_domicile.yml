@@ -85,8 +85,7 @@ code: |
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
         efile_notice
-        if esign:
-          signature_date
+        signature_date
         response_motion_re_change_of_domicile_download
     else:
        response_case_kickout
@@ -514,19 +513,6 @@ content: |
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
 ---
-id: Electronic signature question
-question: |
-  Electronic Signature
-subquestion: |
-  This tool can put "*/s/ ${ users[0] }*" where you would sign your name so you do not have to sign the form by hand. The court will accept this as your signature.
-
-  If you plan to e-file, you may want to add your electronic signature, otherwise you will need to print your forms, sign them by hand, and then scan them.
-
-  ${ collapse_template(efiling_info_template) }
-fields:
-  - Would you like to add your electronic signature to your form?: esign
-    datatype: yesnoradio
----
 id: DownloadScreen
 event: response_motion_re_change_of_domicile_download
 question: |
@@ -577,12 +563,6 @@ attachments:
         ${ '' }
         % endif
     - trial_court: ${ the_court.number }
-    - persuant_to: |
-        % if MLH_esign:
-        ${ MLH_esign_tag }
-        % else: 
-        ${ '' }
-        % endif
     - trial_court_county: ${ county_choice.upper() }
     - docket_numbers: ${docket_numbers}
     - trial_court_phone_number: ${ the_court.phone }
@@ -646,9 +626,9 @@ attachments:
         % else:
         ${ "" }
         % endif
-    - signature_date: ${ today(format='M/d/YYYY') if esign else ""}
+    - signature_date: ${ today(format='M/d/YYYY') if MLH_esign else ""}
     - users2_signature: |
-        ${f"/s/ {users[0]}" if esign else ""}
+        ${f"/s/ {users[0]}" if MLH_esign else ""}
     - signature_date_2:
     - users2_signature_2:
     - form_instructions: ${form_instructions}
