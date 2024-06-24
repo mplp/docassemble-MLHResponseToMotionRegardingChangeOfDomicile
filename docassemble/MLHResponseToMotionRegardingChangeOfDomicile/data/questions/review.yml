@@ -79,49 +79,6 @@ review:
     button: |
       **What date was the most recent judgment entered?**:
       ${ recent_order }
-  - Edit:
-      - moving_reason
-    button: |
-      **Why do you want to move?**:
-      ${ moving_reason }
-  - Edit:
-      - moving_benefits
-    button: |
-      **What are the benefits to the children from this move?**:
-      ${ moving_benefits }
-  - Edit:
-      - maintains_other_parent_relationship
-    button: |
-      **Will the children maintain a similar relationship with their other parent?**:
-      ${ maintains_other_parent_relationship }
-  - Edit: 
-      - other_parent_opposition
-    button: |
-     **Does the other parent oppose the move?**:
-     ${ other_parent_opposition }
-  - Edit:
-      - other_parent_opposition_cs
-    button: |
-      **Do you think they oppose the move because of its impacts child support payments?**:
-      ${ other_parent_opposition_cs }
-  - Edit: 
-      - domestic_violence
-      - domestic_violence_exp
-    button: |
-      **Are you moving to escape domestic violence?**:
-      ${ domestic_violence }
-  - Edit:
-      - moving_date
-    button: |
-      **What is the date you want to move?**:
-      ${ moving_date }
-  - Edit:
-    - wants_parenting_time_change
-    - requested_order
-    - parenting_time_change_agreement
-    button: |
-      **Are you asking to court to change the parenting time?**:
-      ${ wants_parenting_time_change }
 ---      
 reconsider: True
 code: |
