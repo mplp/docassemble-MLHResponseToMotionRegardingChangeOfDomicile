@@ -550,10 +550,19 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
+  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
+---
+objects:
   - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile - FOC 116", filename="Response Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - rmrcd_instructions: ALDocument.using(title="Instructions for Response Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+objects:
+  - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, rmrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 attachment:
   variable name: rmrcd_main.addendum
@@ -651,4 +660,11 @@ attachments:
     - signature_date_2:
     - users2_signature_2:
     - form_instructions: ${form_instructions}
+---
+attachments:
+   name: rmrcd_instructions
+   filename: rmrcd_instructions.docx     
+   variable name: rmrcd_instructions[i]       
+   skip undefined: True
+   docx template file: rmrcd_instructions.docx
 ---
