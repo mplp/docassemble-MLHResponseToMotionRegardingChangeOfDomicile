@@ -410,7 +410,7 @@ fields:
       other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 continue button field: other_party_contact_information
 ---
-id: allow a chage of domicile
+id: allow a change of domicile
 question: |
   Do you agree with ${ other_parties[0].name }'s request to move?
 fields:
@@ -420,7 +420,6 @@ fields:
     choices:
       - I agree: agree
       - I disagree: disagree
-
 ---
 code: |
   if agree_yes == "disagree":
@@ -432,7 +431,7 @@ code: |
 ---
 id: disagree to the change of domicile intro
 question: |
-  Please use complete sentences to explain your reason or reasons you object to the other parent’s move, focusing on the following factors
+  Please use complete sentences to explain the reason or reasons you object to the other parent’s move, focusing on the following factors
 subquestion: |
   1. Whether the move will improve the other parent’s and your child(ren)’s quality of life;
   2. Whether the other parent is asking to move just to limit your parenting time;
