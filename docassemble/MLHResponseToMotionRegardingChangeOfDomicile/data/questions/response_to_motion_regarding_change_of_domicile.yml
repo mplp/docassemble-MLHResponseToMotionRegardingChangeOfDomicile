@@ -30,6 +30,8 @@ code: |
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
 ---
 code: |
   MLH_materials_included = True      
