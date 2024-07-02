@@ -69,12 +69,11 @@ mandatory: True
 code: |
   nav.set_section('review_full')
   nav.set_section("review_intro")
-  intro_screen_2
-  
   MLH_intro_landing
   intro_screen_2
   MLH_agree_terms
   MLH_intro_navigate_save
+
   nav.set_section("personal_info")
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
@@ -176,6 +175,7 @@ subquestion: |
   If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
   
   On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
+  
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
 continue button field: intro_screen_2
@@ -194,25 +194,6 @@ continue button field: intro_screen_2
 
 #   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
 # continue button field: intro_screen_3
----
-id: MLH intro PII
-question: |
-  To protect privacy, you **cannot** include personal identifying information in public documents that are filed in court.
-subquestion: |
-  Personal identifying information includes:
-
-  * Date of birth
-  * Social security or national identification number
-  * Driver’s license or state identification number
-  * Passport number
-  * Financial account numbers
-
-  **Don’t** put any personal identifying information in your answers **unless we specifically ask for it.**
-
-fields:
-  - Do you understand that you should **not** enter any personal identifying information **unless** this tool specifically asks for it?: MLH_intro_agree_no_pii
-    datatype: yesnoradio
-
 ---
 id: existing_case_kickout
 event: existing_case_kickout
