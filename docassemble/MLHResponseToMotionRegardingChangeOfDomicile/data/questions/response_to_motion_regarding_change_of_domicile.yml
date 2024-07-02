@@ -30,6 +30,8 @@ code: |
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
 ---
 code: |
   MLH_materials_included = True      
@@ -53,11 +55,10 @@ objects:
 ---
 sections:
   - review_intro: "Introduction"
-  - personal_info: "Personal Identifying Information"
+
   - qualifying_questions: "Do you qualify?"
-  - review_prior_case: "Prior Case Information"
-  - review_your_info: "Your Information"
-  - review_other_info: "Other Parent's Information"
+  - case_info: "Case Information"
+
   - do_you_agree: "Do you agree?"
   - allow_changes: "Allow changes?"
   - review_parenting_time_info: "Parenting Time"
@@ -69,37 +70,32 @@ mandatory: True
 code: |
   nav.set_section('review_full')
   nav.set_section("review_intro")
-  intro_screen_2
-  
   MLH_intro_landing
   intro_screen_2
   MLH_agree_terms
   MLH_intro_navigate_save
-  nav.set_section("personal_info")
+
+
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
     if qualify_to_RMRCD:
       if third_party_check:
         third_party_kickout
       else:
-        nav.set_section("review_prior_case")
+        nav.set_section("case_info")
         county_choice
         court_index
         the_court
         docket_numbers
         user_ask_role
         prior_order_yesno
-        nav.set_section("review_your_info")
         users.gather()
-        nav.set_section("review_other_info")
         other_parties.gather()
-        nav.set_section("do_you_agree")
+        nav.set_section("review_parenting_time_info")
         if agree_yes == "disagree":
           description_to_not_agree_change_of_domicile
-        nav.set_section("allow_changes")
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
-        nav.set_section("review_parenting_time_info")
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
         MLH_outro_filing_information
@@ -176,6 +172,7 @@ subquestion: |
   If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
   
   On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
+  
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
 continue button field: intro_screen_2
@@ -195,25 +192,6 @@ continue button field: intro_screen_2
 #   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
 # continue button field: intro_screen_3
 ---
-id: MLH intro PII
-question: |
-  To protect privacy, you **cannot** include personal identifying information in public documents that are filed in court.
-subquestion: |
-  Personal identifying information includes:
-
-  * Date of birth
-  * Social security or national identification number
-  * Driver’s license or state identification number
-  * Passport number
-  * Financial account numbers
-
-  **Don’t** put any personal identifying information in your answers **unless we specifically ask for it.**
-
-fields:
-  - Do you understand that you should **not** enter any personal identifying information **unless** this tool specifically asks for it?: MLH_intro_agree_no_pii
-    datatype: yesnoradio
-
----
 id: existing_case_kickout
 event: existing_case_kickout
 question: |
@@ -225,13 +203,13 @@ id: qualifying_questions
 question: |
   Can you use this tool?
 fields:
-  - Did your child's other parent file a Motion Regarding Change of Domicile/Legal Residence in an existing Michigan family law case?: qualify_to_RMRCD
+  - Did your child's other parent file a *Motion Regarding Change of Domicile/Legal Residence* in an existing Michigan family law case?: qualify_to_RMRCD
     datatype: yesnoradio
+  - note: |
+      ${ collapse_template(RMRCD) }
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
     show if: qualify_to_RMRCD 
-  - note: |
-      ${ collapse_template(RMRCD) }
 continue button field: do_you_qualify_to_RMRCD
   
 ---
@@ -261,7 +239,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a Response to Motion Regarding Change of Domicile/Legal Residence in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
@@ -299,6 +277,8 @@ question: |
   What party are you in your existing case?
 subquestion: |  
   In your court case, you are either the Plaintiff or the Defendant.
+  
+  ${ collapse_template(help_user_ask_role_template) }
 fields:
   - What party are you in your case?: user_ask_role
     datatype: radio
@@ -356,24 +336,26 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${user_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${user_des}.
-
-  If you don't want the ${user_des} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
+  ${ collapse_template(safe_contact_info) }
 fields:
   - Phone number: users[0].phone_number
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
+template: safe_contact_info
+subject: |
+  What if it's **not safe** to share my contact information with the other parent?
+content: |      
+  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party}.
+
+  If you don't want the ${other_party} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
+---
 code: |
   party_3_yes = False
   form_instructions = "Form instructions"
   if user_ask_role=="plaintiff":
-    user_des = "Defendant"
-    other_party_des = "Plaintiff"
     other_party = "Defendant"
   else:
-    user_des = "Plaintiff"
-    other_party_des = "Defendant"
     other_party = "Plaintiff"
 ---
 id: other party information
@@ -410,17 +392,16 @@ fields:
       other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 continue button field: other_party_contact_information
 ---
-id: allow a chage of domicile
+id: allow a change of domicile
 question: |
-  Do you agree with ${ other_parties[0].name }'s request to move?
+  Best interests of the child or children
 fields:
-  - Do you agree that it is in the best interests of the child(ren) to allow a change of domicile or legal residence?: agree_yes
+  - Do you agree or disagree to allow a change of domicile or legal residence as requested in ${users[0].name}'s motion?: agree_yes
   
     datatype: radio
     choices:
       - I agree: agree
       - I disagree: disagree
-
 ---
 code: |
   if agree_yes == "disagree":
@@ -432,25 +413,28 @@ code: |
 ---
 id: disagree to the change of domicile intro
 question: |
-  Please use complete sentences to explain your reason or reasons you object to the other parent’s move, focusing on the following factors
+  Why you disagree
 subquestion: |
+  Please use complete sentences to explain the reason or reasons you object to the other parent’s move, focusing on the following factors:
+  
   1. Whether the move will improve the other parent’s and your child(ren)’s quality of life;
   2. Whether the other parent is asking to move just to limit your parenting time;
   3. Whether new parenting time arrangements can be made which allow you to still have a similar relationship with your child;
   4. Whether you are fighting against the move just to pay less child support;
   5. Whether the other parent is moving to escape domestic violence.
-  <p>Complete the following: "I do not agree to allow a change of domicile or legal residence as requested in the motion because..."</p>
+  
+  Complete the following: 
 fields:
-  - no label: description_to_not_agree_change_of_domicile
+  - I do not agree to allow a change of domicile or legal residence as requested in the motion because...: description_to_not_agree_change_of_domicile
     input type: area
 ---
 id: allow changes in domicile
 question: |
-  Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?
+  Allow changes?
 fields:
-  - no label: allow_yes
+  - Do you agree the court should allow what ${ other_parties[0].name } asked for in section E(4) of their motion?: allow_yes
     datatype: yesnoradio
-  - Explain in as much detail as possible what you want the court to order instead. Use complete sentences.: description_2_to_not_allow_change_of_domicile
+  - Explain in as much detail as possible **what you want the court to order instead**. Use complete sentences.: description_2_to_not_allow_change_of_domicile
     input type: area
     show if:
       variable: allow_yes
@@ -487,7 +471,11 @@ fields:
       - I don't know
     show if:
       variable: continue_parenting_time_yes
-      is: "Change the current parenting time order in a different way I will specify"  
+      is: "Change the current parenting time order in a different way I will specify"
+      
+  - note: |
+      ${ collapse_template(parenting_schedule) }
+   
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -502,6 +490,12 @@ code: |
     continue_parenting_time = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
+---
+template: parenting_schedule
+subject: |
+  Parenting Time Schedules
+content: |
+  Some Friend of the Court offices have standard parenting time schedules you can use. There are also sample parenting time schedules on the Michigan Legal Help website, including a sample long distance parenting time schedule.
 ---
 id: efile note question
 question: |
@@ -550,10 +544,19 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
+  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
+---
+objects:
   - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile - FOC 116", filename="Response Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - rmrcd_instructions: ALDocument.using(title="Instructions for Response Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+objects:
+  - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, rmrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 attachment:
   variable name: rmrcd_main.addendum
@@ -651,4 +654,11 @@ attachments:
     - signature_date_2:
     - users2_signature_2:
     - form_instructions: ${form_instructions}
+---
+attachments:
+   name: rmrcd_instructions
+   filename: rmrcd_instructions.docx     
+   variable name: rmrcd_instructions[i]       
+   skip undefined: True
+   docx template file: rmrcd_instructions.docx
 ---
