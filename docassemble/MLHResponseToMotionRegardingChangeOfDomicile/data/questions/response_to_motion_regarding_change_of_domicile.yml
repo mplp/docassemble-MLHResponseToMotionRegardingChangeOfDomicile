@@ -30,6 +30,8 @@ code: |
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
 ---
 code: |
   MLH_materials_included = True      
@@ -206,13 +208,13 @@ id: qualifying_questions
 question: |
   Can you use this tool?
 fields:
-  - Did your child's other parent file a Motion Regarding Change of Domicile/Legal Residence in an existing Michigan family law case?: qualify_to_RMRCD
+  - Did your child's other parent file a *Motion Regarding Change of Domicile/Legal Residence* in an existing Michigan family law case?: qualify_to_RMRCD
     datatype: yesnoradio
+  - note: |
+      ${ collapse_template(RMRCD) }
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
     show if: qualify_to_RMRCD 
-  - note: |
-      ${ collapse_template(RMRCD) }
 continue button field: do_you_qualify_to_RMRCD
   
 ---
@@ -242,7 +244,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a Response to Motion Regarding Change of Domicile/Legal Residence in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
@@ -280,6 +282,8 @@ question: |
   What party are you in your existing case?
 subquestion: |  
   In your court case, you are either the Plaintiff or the Defendant.
+  
+  ${ collapse_template(help_user_ask_role_template) }
 fields:
   - What party are you in your case?: user_ask_role
     datatype: radio
@@ -337,24 +341,26 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  For the following, please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${user_des}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${user_des}.
-
-  If you don't want the ${user_des} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
+  ${ collapse_template(safe_contact_info) }
 fields:
   - Phone number: users[0].phone_number
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
+template: safe_contact_info
+subject: |
+  What if it's **not safe** to share my contact information with the other parent?
+content: |      
+  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party}.
+
+  If you don't want the ${other_party} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
+---
 code: |
   party_3_yes = False
   form_instructions = "Form instructions"
   if user_ask_role=="plaintiff":
-    user_des = "Defendant"
-    other_party_des = "Plaintiff"
     other_party = "Defendant"
   else:
-    user_des = "Plaintiff"
-    other_party_des = "Defendant"
     other_party = "Plaintiff"
 ---
 id: other party information
@@ -393,7 +399,7 @@ continue button field: other_party_contact_information
 ---
 id: allow a change of domicile
 question: |
-  Do you agree with ${ other_parties[0].name }'s request to move?
+  Best interests of the child or children
 fields:
   - Do you agree that it is in the best interests of the child(ren) to allow a change of domicile or legal residence?: agree_yes
   
@@ -412,25 +418,28 @@ code: |
 ---
 id: disagree to the change of domicile intro
 question: |
-  Please use complete sentences to explain the reason or reasons you object to the other parent’s move, focusing on the following factors
+  Why you disagree
 subquestion: |
+  Please use complete sentences to explain the reason or reasons you object to the other parent’s move, focusing on the following factors:
+  
   1. Whether the move will improve the other parent’s and your child(ren)’s quality of life;
   2. Whether the other parent is asking to move just to limit your parenting time;
   3. Whether new parenting time arrangements can be made which allow you to still have a similar relationship with your child;
   4. Whether you are fighting against the move just to pay less child support;
   5. Whether the other parent is moving to escape domestic violence.
-  <p>Complete the following: "I do not agree to allow a change of domicile or legal residence as requested in the motion because..."</p>
+  
+  Complete the following: 
 fields:
-  - no label: description_to_not_agree_change_of_domicile
+  - I do not agree to allow a change of domicile or legal residence as requested in the motion because...: description_to_not_agree_change_of_domicile
     input type: area
 ---
 id: allow changes in domicile
 question: |
-  Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?
+  Allow changes?
 fields:
-  - no label: allow_yes
+  - Do you agree the court should allow what ${ other_parties[0].name } asked for in section E(4) of their motion?: allow_yes
     datatype: yesnoradio
-  - Explain in as much detail as possible what you want the court to order instead. Use complete sentences.: description_2_to_not_allow_change_of_domicile
+  - Explain in as much detail as possible **what you want the court to order instead**. Use complete sentences.: description_2_to_not_allow_change_of_domicile
     input type: area
     show if:
       variable: allow_yes
