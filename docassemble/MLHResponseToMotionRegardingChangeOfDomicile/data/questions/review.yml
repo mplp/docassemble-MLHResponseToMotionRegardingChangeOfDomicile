@@ -71,8 +71,14 @@ review:
       ${ docket_number }
   - Edit: 
       - recent_order
+      - prior_order_yesno
     button: |
+      **Is there a custody order or a judgement in your family law case?**
+      
+      ${ word(yesno(prior_order_yesno)) }
+      
       **What date was the most recent judgment entered?**
+      
       ${ recent_order }
   - Edit: 
       - agree_yes
