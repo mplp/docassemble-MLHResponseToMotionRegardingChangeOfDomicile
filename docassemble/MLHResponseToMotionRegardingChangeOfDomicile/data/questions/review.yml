@@ -9,7 +9,7 @@ review:
       ### Information for Parents and Children
   - Edit: users.revisit
     button: |-
-      **Your Information**
+      **Your Information:**
 
       % for item in users:
         ${ item }
@@ -18,9 +18,15 @@ review:
         
         ${ item.phone_number }
       % endfor
+  - Edit: user_ask_role
+    button: |
+      **What party are you in your existing case?**
+
+      ${ showifdef('user_ask_role').capitalize() }
+      
   - Edit: other_parties.revisit
     button: |-
-      **The Other side of your case**
+      **The Other side of your case:**
 
       % for item in other_parties:
         ${ item }
@@ -28,33 +34,6 @@ review:
         ${ item.address.block() }
         
         ${ item.phone_number }
-      % endfor
-  - Edit:
-      - user_ask_role
-
-    button: |
-      **What party are you in your existing case?**
-
-      ${ showifdef('user_ask_role').capitalize() }
-  - Edit: other_parties.revisit
-    button: |-
-      **The Other side of your case**
-
-      % for item in other_parties:
-        ${ item }
-      
-        ${ item.address.block() }
-        
-        ${ word("") if item.no_phone_number else item.phone_numbers() }
-      % endfor
-  - Edit: children.revisit
-    button: |-
-      **Children**
-
-      % for item in children:
-        ${ item }
-        
-        ${ item.birthdate }
       % endfor
   - note: |
       <hr>
@@ -68,7 +47,7 @@ review:
       - court_index
       - court_count
     button: |
-      **Court Information**
+      **Court Information:**
       
       ${ the_court.number } ${ the_court.type.capitalize() } Court
 
@@ -101,7 +80,7 @@ review:
       - description_to_not_agree_change_of_domicile
     button: |
       % if agree_yes == False:
-      **Your reason for disagreeing with ${ other_parties[0].name }'s request to move**: 
+      **Your reason for disagreeing with ${ other_parties[0].name }'s request to move:** 
       
       ${ description_to_not_agree_change_of_domicile }
       % endif
@@ -116,7 +95,7 @@ review:
       - description_2_to_not_allow_change_of_domicile
     button: |
       % if not allow_yes:
-      **Explain in as much detail as possible what you want the court to order instead**: 
+      **Explain in as much detail as possible what you want the court to order instead:** 
       
       ${ description_2_to_not_allow_change_of_domicile }
       % endif
@@ -131,7 +110,7 @@ review:
       - description_to_modifying_the_parentingtime_order_as_follows
     button: |
       % if continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify':
-      **Explain what you propose the new parenting time arrangements be**:
+      **Explain what you propose the new parenting time arrangements be:**
       
       ${ description_to_modifying_the_parentingtime_order_as_follows }
       % endif
