@@ -16,7 +16,18 @@ review:
       
         ${ item.address.block() }
         
-        ${ word("") if item.no_phone_number else item.phone_numbers() }
+        ${ item.phone_number }
+      % endfor
+  - Edit: other_parties.revisit
+    button: |-
+      **The Other side of your case**
+
+      % for item in other_parties:
+        ${ item }
+      
+        ${ item.address.block() }
+        
+        ${ item.phone_number }
       % endfor
   - Edit:
       - user_ask_role
@@ -83,35 +94,45 @@ review:
   - Edit: 
       - agree_yes
     button: |
-      **Do you agree with ${ other_parties[0].name }'s request to move?** ${ agree_yes }
+      **Do you agree with ${ other_parties[0].name }'s request to move?** 
+      
+      ${ word(yesno(agree_yes)) }
   - Edit: 
       - description_to_not_agree_change_of_domicile
     button: |
-      % if agree_yes == 'disagree':
-      **Your reason for disagreeing with ${ other_parties[0].name }'s request to move**: ${ description_to_not_agree_change_of_domicile }
+      % if agree_yes == False:
+      **Your reason for disagreeing with ${ other_parties[0].name }'s request to move**: 
+      
+      ${ description_to_not_agree_change_of_domicile }
       % endif
-    show if: agree_yes == 'disagree'
+    show if: agree_yes == False
   - Edit: 
       - allow_yes
     button: |
-      **Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?** ${ allow_yes }
+      **Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?** 
+      
+      ${ word(yesno(allow_yes)) }
   - Edit: 
       - description_2_to_not_allow_change_of_domicile
     button: |
       % if not allow_yes:
-      **Explain in as much detail as possible what you want the court to order instead**: ${ description_2_to_not_allow_change_of_domicile }
+      **Explain in as much detail as possible what you want the court to order instead**: 
+      
+      ${ description_2_to_not_allow_change_of_domicile }
       % endif
     show if: not allow_yes
   - Edit: 
       - continue_parenting_time_yes
     button: |
       **What do you want to ask the court to do about parenting time?**
+      
       ${ continue_parenting_time_yes }
   - Edit: 
       - description_to_modifying_the_parentingtime_order_as_follows
     button: |
       % if continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify':
       **Explain what you propose the new parenting time arrangements be**:
+      
       ${ description_to_modifying_the_parentingtime_order_as_follows }
       % endif
     show if: continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify'
@@ -120,6 +141,7 @@ review:
     button: |
       % if continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify': 
       **Does ${ other_parties[0].name } agree to this new parenting time schedule?**
+      
       ${ agree_to_new_parenting_time }
       % endif
     show if: continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify'
