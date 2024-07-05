@@ -32,6 +32,7 @@ code: |
   MLH_time_max = "60"
   accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
   resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
+  
 ---
 code: |
   MLH_materials_included = True      
@@ -542,6 +543,10 @@ subquestion: |
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
+---
+objects:
+  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
+
 ---
 objects:
   - rmrcd_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")

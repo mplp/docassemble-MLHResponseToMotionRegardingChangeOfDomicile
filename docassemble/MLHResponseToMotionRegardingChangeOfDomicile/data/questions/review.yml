@@ -18,7 +18,9 @@ review:
         
         ${ item.phone_number }
       % endfor
-  - Edit: user_ask_role
+  - Edit:
+      - user_ask_role
+
     button: |
       **What party are you in your existing case?**
 
