@@ -32,6 +32,7 @@ code: |
   MLH_time_max = "60"
   accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
   resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
+  
 ---
 code: |
   MLH_materials_included = True      
@@ -55,13 +56,9 @@ objects:
 ---
 sections:
   - review_intro: "Introduction"
-  - personal_info: "Personal Identifying Information"
+
   - qualifying_questions: "Do you qualify?"
-  - review_prior_case: "Prior Case Information"
-  - review_your_info: "Your Information"
-  - review_other_info: "Other Parent's Information"
-  - do_you_agree: "Do you agree?"
-  - allow_changes: "Allow changes?"
+  - case_info: "Case Information"
   - review_parenting_time_info: "Parenting Time"
   - review_conclusion: "Conclusion"
   - review_full: "✎ <u>Review / Edit</u>"
@@ -76,31 +73,27 @@ code: |
   MLH_agree_terms
   MLH_intro_navigate_save
 
-  nav.set_section("personal_info")
+
   if MLH_intro_agree_no_pii:
     nav.set_section("qualifying_questions")
     if qualify_to_RMRCD:
       if third_party_check:
         third_party_kickout
       else:
-        nav.set_section("review_prior_case")
+        nav.set_section("case_info")
         county_choice
         court_index
         the_court
         docket_numbers
         user_ask_role
         prior_order_yesno
-        nav.set_section("review_your_info")
         users.gather()
-        nav.set_section("review_other_info")
         other_parties.gather()
-        nav.set_section("do_you_agree")
+        nav.set_section("review_parenting_time_info")
         if agree_yes == "disagree":
           description_to_not_agree_change_of_domicile
-        nav.set_section("allow_changes")
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
-        nav.set_section("review_parenting_time_info")
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
         MLH_outro_filing_information
@@ -401,7 +394,7 @@ id: allow a change of domicile
 question: |
   Best interests of the child or children
 fields:
-  - Do you agree that it is in the best interests of the child(ren) to allow a change of domicile or legal residence?: agree_yes
+  - Do you agree or disagree to allow a change of domicile or legal residence as requested in ${users[0].name}'s motion?: agree_yes
   
     datatype: radio
     choices:
@@ -476,7 +469,11 @@ fields:
       - I don't know
     show if:
       variable: continue_parenting_time_yes
-      is: "Change the current parenting time order in a different way I will specify"  
+      is: "Change the current parenting time order in a different way I will specify"
+      
+  - note: |
+      ${ collapse_template(parenting_schedule) }
+   
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -491,6 +488,12 @@ code: |
     continue_parenting_time = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
+---
+template: parenting_schedule
+subject: |
+  Parenting Time Schedules
+content: |
+  Some Friend of the Court offices have standard parenting time schedules you can use. There are also sample parenting time schedules on the Michigan Legal Help website, including a sample long distance parenting time schedule.
 ---
 id: efile note question
 question: |
@@ -542,13 +545,17 @@ objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
 ---
 objects:
-  - rmrcd_main: ALDocument.using(title="Response Motion Regarding Change of Domicile - FOC 116", filename="Response Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
+  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
+
 ---
 objects:
-  - rmrcd_instructions: ALDocument.using(title="Instructions for Response Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - rmrcd_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_main], filename="Response Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - rmrcd_instructions: ALDocument.using(title="Instructions for Response to Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, rmrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
