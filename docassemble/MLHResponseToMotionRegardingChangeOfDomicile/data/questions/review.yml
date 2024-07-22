@@ -13,7 +13,7 @@ review:
 
       % for item in users:
         ${ item }
-      
+
         ${ item.address.block() }
         
         ${ item.phone_number }
@@ -25,32 +25,32 @@ review:
       **What party are you in your existing case?**
 
       ${ showifdef('user_ask_role').capitalize() }
-      
+
   - Edit: other_parties.revisit
     button: |-
       **The Other side of your case:**
 
       % for item in other_parties:
         ${ item }
-      
+
         ${ item.address.block() }
         
         ${ item.phone_number }
       % endfor
   - note: |
       <hr>
-      
+
       ### Case and Court Information
-  - Edit: 
-    - county_choice
-    - recompute:
-      - the_court
-      - recompute_court
-      - court_index
-      - court_count
+  - Edit:
+      - county_choice
+      - recompute:
+          - the_court
+          - recompute_court
+          - court_index
+          - court_count
     button: |
       **Court Information:**
-      
+
       ${ the_court.number } ${ the_court.type.capitalize() } Court
 
       ${ county_choice } County
@@ -61,72 +61,76 @@ review:
       **What is your case number?**
 
       ${ docket_number }
-  - Edit: 
+  - Edit:
       - recent_order
       - prior_order_yesno
     button: |
       **Is there a custody order or a judgement in your family law case?**
-      
+
       ${ word(yesno(prior_order_yesno)) }
-      
+
       **What date was the most recent judgment entered?**
-      
+
       ${ recent_order }
-  - Edit: 
+  - Edit:
       - agree_yes
+      - recompute:
+        - set_agree_yes_checkbox
     button: |
       **Do you agree with ${ other_parties[0].name }'s request to move?** 
-      
+
       ${ word(yesno(agree_yes)) }
-  - Edit: 
+  - Edit:
       - description_to_not_agree_change_of_domicile
     button: |
       % if agree_yes == False:
       **Your reason for disagreeing with ${ other_parties[0].name }'s request to move:** 
-      
+
       ${ description_to_not_agree_change_of_domicile }
       % endif
     show if: agree_yes == False
-  - Edit: 
+  - Edit:
       - allow_yes
     button: |
       **Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?** 
-      
+
       ${ word(yesno(allow_yes)) }
-  - Edit: 
+  - Edit:
       - description_2_to_not_allow_change_of_domicile
     button: |
       % if not allow_yes:
       **Explain in as much detail as possible what you want the court to order instead:** 
-      
+
       ${ description_2_to_not_allow_change_of_domicile }
       % endif
     show if: not allow_yes
-  - Edit: 
+  - Edit:
       - continue_parenting_time_yes
+      - recompute:
+        - modify_parenting_time_exp_update
     button: |
       **What do you want to ask the court to do about parenting time?**
-      
+
       ${ continue_parenting_time_yes }
-  - Edit: 
-      - description_to_modifying_the_parentingtime_order_as_follows
+  - Edit:
+      - modify_parenting_time_exp
     button: |
       % if continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify':
       **Explain what you propose the new parenting time arrangements be:**
-      
-      ${ description_to_modifying_the_parentingtime_order_as_follows }
+
+      ${ modify_parenting_time_exp }
       % endif
     show if: continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify'
-  - Edit: 
+  - Edit:
       - agree_to_new_parenting_time
     button: |
       % if continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify': 
       **Does ${ other_parties[0].name } agree to this new parenting time schedule?**
-      
+
       ${ agree_to_new_parenting_time }
       % endif
     show if: continue_parenting_time_yes == 'Change the current parenting time order in a different way I will specify'
----      
+---
 reconsider: True
 code: |
   if court_count > 1:
