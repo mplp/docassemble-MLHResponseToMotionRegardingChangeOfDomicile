@@ -30,17 +30,18 @@ code: |
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
-  accessible_instructions_link = "[https://michiganlegalhelp.org/step/3974](https://michiganlegalhelp.org/step/3974)"
-  resource_page_link = "[https://michiganlegalhelp.org/node/3973](https://michiganlegalhelp.org/node/3973)"
-  
+  MLH_form_type = "form"
+  accessible_instructions_link = "[https://michiganlegalhelp.org/node/2066](https://michiganlegalhelp.org/node/2066)"
+  resource_page_link = "[https://michiganlegalhelp.org/node/10945](https://michiganlegalhelp.org/node/10945)"
+
 ---
 code: |
-  MLH_materials_included = True      
+  MLH_materials_included = True
 ---
-template: MLH_materials             
+template: MLH_materials
 content: |
   * A copy of the most recent custody order
-  * A copy of the other parent's *Motion to Change Domicile/Residence* 
+  * A copy of the other parent's *Motion to Change Domicile/Residence*
 ---
 code: |
   MLH_welcome_message = "This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan."
@@ -90,8 +91,9 @@ code: |
         users.gather()
         other_parties.gather()
         nav.set_section("review_parenting_time_info")
-        if agree_yes == "disagree":
+        if not agree_yes:
           description_to_not_agree_change_of_domicile
+        set_agree_yes_checkbox
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
         continue_parenting_time_yes 
@@ -140,7 +142,7 @@ code: |
 # question: |
 #   Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
 # subquestion: |
-#   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.  
+#   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.
 
 #   If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
 # continue button field: intro_screen
@@ -151,7 +153,7 @@ code: |
 #   Need more help?
 # subquestion: |
 #   This tool will help you prepare forms for your legal issue without a lawyer.
-   
+
 #   ${ MLH_GUIDE_FULL }
 ---
 id: intro_screen_2
@@ -159,7 +161,7 @@ question: |
   If Your Child's Other Parent Wants to Move
 subquestion: |
   If there is a custody or parenting time order for your child, the other parent **must** get the court’s approval before moving his or her residence **outside Michigan**.
-  
+
   A parent may also need permission from the court to move **within Michigan**. This depends on things like:
 
   * The custody and parenting time arrangements 
@@ -168,9 +170,9 @@ subquestion: |
   * Whether the other parent agrees to the move
 
   If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
-  
+
   On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-  
+
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
 continue button field: intro_screen_2
@@ -207,16 +209,15 @@ fields:
       ${ collapse_template(RMRCD) }
   - Is a third party (a non-parent) part of your existing family law case?: third_party_check
     datatype: yesnoradio
-    show if: qualify_to_RMRCD 
+    show if: qualify_to_RMRCD
 continue button field: do_you_qualify_to_RMRCD
-  
 ---
 template: RMRCD
 subject: |
   What kind of family law cases count?
 content: |
   This includes:
-  
+
      * Divorce
      * Separate maintenance
      * Paternity
@@ -237,7 +238,7 @@ event: third_party_kickout
 question: |
   We’re sorry, but you cannot use this tool.
 subquestion: |
-  This tool may only be used to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in a Michigan family law case between two parents, with no third party involvement.
+  This tool may only be used to file a *Response to *Motion Regarding Change of Domicile/Legal Residence* in a Michigan family law case between two parents, with no third party involvement.
 
   We cannot help you, but your local legal aid program or other lawyer may be able to.  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) to find a lawyer or a legal services office near you.
 
@@ -273,9 +274,9 @@ fields:
 id: what is the user's role?
 question: |
   What party are you in your existing case?
-subquestion: |  
+subquestion: |
   In your court case, you are either the Plaintiff or the Defendant.
-  
+
   ${ collapse_template(help_user_ask_role_template) }
 fields:
   - What party are you in your case?: user_ask_role
@@ -343,7 +344,7 @@ fields:
 template: safe_contact_info
 subject: |
   What if it's **not safe** to share my contact information with the other parent?
-content: |      
+content: |
   Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party}.
 
   If you don't want the ${other_party} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
@@ -394,34 +395,34 @@ id: allow a change of domicile
 question: |
   Best interests of the child or children
 fields:
-  - Do you agree or disagree to allow a change of domicile or legal residence as requested in ${users[0].name}'s motion?: agree_yes
-  
+  - Do you agree or disagree to allow a change of domicile or legal residence as requested in ${ other_parties[0].name }'s motion?: agree_yes
+
     datatype: radio
     choices:
-      - I agree: agree
-      - I disagree: disagree
+      - I agree: True
+      - I disagree: False
 ---
 code: |
-  if agree_yes == "disagree":
+  if agree_yes == False:
     do_not_agree_yes = True
-    agree_yes = False
-  else:
+  elif agree_yes == True:
     do_not_agree_yes = False
-    agree_yes = True
+
+  set_agree_yes_checkbox = True
 ---
 id: disagree to the change of domicile intro
 question: |
-  Why you disagree
+  Explain why you disagree
 subquestion: |
   Please use complete sentences to explain the reason or reasons you object to the other parent’s move, focusing on the following factors:
-  
+
   1. Whether the move will improve the other parent’s and your child(ren)’s quality of life;
   2. Whether the other parent is asking to move just to limit your parenting time;
   3. Whether new parenting time arrangements can be made which allow you to still have a similar relationship with your child;
   4. Whether you are fighting against the move just to pay less child support;
   5. Whether the other parent is moving to escape domestic violence.
-  
-  Complete the following: 
+
+  Complete the following:
 fields:
   - I do not agree to allow a change of domicile or legal residence as requested in the motion because...: description_to_not_agree_change_of_domicile
     input type: area
@@ -456,8 +457,8 @@ fields:
       - Continue the current parenting-time order
       - Change the current parenting time order as stated in the other parent’s motion
       - Change the current parenting time order in a different way I will specify
-  - Explain what you propose the new parenting time arrangements be. Use complete sentences.: description_to_modifying_the_parentingtime_order_as_follows 
-    input type: area  
+  - Explain what you propose the new parenting time arrangements be. Use complete sentences.: modify_parenting_time_exp
+    input type: area
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"
@@ -470,10 +471,10 @@ fields:
     show if:
       variable: continue_parenting_time_yes
       is: "Change the current parenting time order in a different way I will specify"
-      
+
   - note: |
       ${ collapse_template(parenting_schedule) }
-   
+
 ---
 code: |
   if continue_parenting_time_yes == "Continue the current parenting-time order":
@@ -488,6 +489,12 @@ code: |
     continue_parenting_time = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
+---
+code: |
+  if continue_parenting_time_yes != "Change the current parenting time order in a different way I will specify":
+    undefine('modify_parenting_time_exp')
+
+  modify_parenting_time_exp_update = True
 ---
 template: parenting_schedule
 subject: |
@@ -546,7 +553,6 @@ objects:
 ---
 objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
-
 ---
 objects:
   - rmrcd_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
@@ -567,10 +573,10 @@ attachment:
 code: |
   rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 640
   rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].overflow_trigger = 340
-  rmrcd_main.overflow_fields['description_to_modifying_the_parentingtime_order_as_follows'].overflow_trigger = 440
+  rmrcd_main.overflow_fields['modify_parenting_time_exp'].overflow_trigger = 440
   rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].label = "Continued from Paragraph 2:"
   rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].label = "Continued from Paragraph 3:"
-  rmrcd_main.overflow_fields['description_to_modifying_the_parentingtime_order_as_follows'].label = "Continued from Paragraph 4:"
+  rmrcd_main.overflow_fields['modify_parenting_time_exp'].label = "Continued from Paragraph 4:"
   rmrcd_main.overflow_fields.gathered = True
 ---
 attachments:
@@ -636,9 +642,9 @@ attachments:
     - continue_parenting_time_yes: ${continue_parenting_time}
     - modify_parenting_time_yes: ${modify_parenting_time_yes}
     - modifying_the_parentingtime_order_as_follows_yes: ${modifying_the_parentingtime_order_as_follows_yes}
-    - description_to_modifying_the_parentingtime_order_as_follows: |
+    - modify_parenting_time_exp: |
         % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
-        ${ rmrcd_main.safe_value('description_to_modifying_the_parentingtime_order_as_follows') }                                                                                
+        ${ rmrcd_main.safe_value('modify_parenting_time_exp') }                                                                                
           % if agree_to_new_parenting_time == True and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
           ${ other_parties[0].name } agrees to this new parenting time schedule.
           % elif agree_to_new_parenting_time == False and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
@@ -658,9 +664,9 @@ attachments:
     - form_instructions: ${form_instructions}
 ---
 attachments:
-   name: rmrcd_instructions
-   filename: rmrcd_instructions.docx     
-   variable name: rmrcd_instructions[i]       
-   skip undefined: True
-   docx template file: rmrcd_instructions.docx
+  name: rmrcd_instructions
+  filename: rmrcd_instructions.docx
+  variable name: rmrcd_instructions[i]
+  skip undefined: True
+  docx template file: rmrcd_instructions.docx
 ---
