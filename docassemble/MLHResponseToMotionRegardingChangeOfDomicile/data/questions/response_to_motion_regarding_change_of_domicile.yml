@@ -571,7 +571,7 @@ attachment:
   docx template file: motion_re_cod_attachment.docx
 ---
 code: |
-  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 640
+  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 840
   rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].overflow_trigger = 340
   rmrcd_main.overflow_fields['modify_parenting_time_exp'].overflow_trigger = 440
   rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].label = "Continued from Paragraph 2:"
@@ -645,12 +645,12 @@ attachments:
     - modify_parenting_time_exp: |
         % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
         ${ rmrcd_main.safe_value('modify_parenting_time_exp') }                                                                                
-          % if agree_to_new_parenting_time == True and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
+          % if agree_to_new_parenting_time == "Yes" and (len(modify_parenting_time_exp) <= 440):
           ${ other_parties[0].name } agrees to this new parenting time schedule.
-          % elif agree_to_new_parenting_time == False and rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640:
+          % elif agree_to_new_parenting_time == "No" and (len(modify_parenting_time_exp) <= 440):
           ${ other_parties[0].name } does not agree to this new parenting time schedule.
-          % elif rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger != 640: 
-         I don’t know whether ${other_parties[0].name } agrees to this new parenting time schedule.
+          % elif agree_to_new_parenting_time == "I don't know" and (len(modify_parenting_time_exp) <= 440): 
+          I don’t know whether ${other_parties[0].name } agrees to this new parenting time schedule.
           % endif
           
         % else:
