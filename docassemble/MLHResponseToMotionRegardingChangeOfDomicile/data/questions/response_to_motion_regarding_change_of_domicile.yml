@@ -496,6 +496,18 @@ code: |
 
   modify_parenting_time_exp_update = True
 ---
+code: |
+  if agree_yes:
+    undefine('description_to_not_agree_change_of_domicile')
+
+  description_to_not_agree_change_of_domicile_update = True
+---
+code: |
+  if allow_yes:
+    undefine('description_2_to_not_allow_change_of_domicile')
+
+  description_2_to_not_allow_change_of_domicile_update = True
+---
 template: parenting_schedule
 subject: |
   Parenting Time Schedules
@@ -555,34 +567,33 @@ objects:
   - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
 ---
 objects:
-  - rmrcd_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
+  - rmrcd_attachment_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
   - rmrcd_instructions: ALDocument.using(title="Instructions for Response to Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+---
+objects:
+  - al_court_bundle: ALDocumentBundle.using(elements=[rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to deliver to court", enabled=True)
 ---
 objects:
   - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, rmrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
-attachment:
-  variable name: rmrcd_main.addendum
-  docx template file: motion_re_cod_attachment.docx
----
 code: |
-  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 840
-  rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].overflow_trigger = 340
-  rmrcd_main.overflow_fields['modify_parenting_time_exp'].overflow_trigger = 440
-  rmrcd_main.overflow_fields['description_to_not_agree_change_of_domicile'].label = "Continued from Paragraph 2:"
-  rmrcd_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].label = "Continued from Paragraph 3:"
-  rmrcd_main.overflow_fields['modify_parenting_time_exp'].label = "Continued from Paragraph 4:"
-  rmrcd_main.overflow_fields.gathered = True
+  rmrcd_attachment_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 840
+  rmrcd_attachment_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].overflow_trigger = 340
+  rmrcd_attachment_main.overflow_fields['modify_parenting_time_exp'].overflow_trigger = 440
+  rmrcd_attachment_main.overflow_fields['description_to_not_agree_change_of_domicile'].label = "Continued from Paragraph 2:"
+  rmrcd_attachment_main.overflow_fields['description_2_to_not_allow_change_of_domicile'].label = "Continued from Paragraph 3:"
+  rmrcd_attachment_main.overflow_fields['modify_parenting_time_exp'].label = "Continued from Paragraph 4:"
+  rmrcd_attachment_main.overflow_fields.gathered = True
 ---
 attachments:
   name: foc_116
   filename: foc_116
-  variable name: rmrcd_main[i]
+  variable name: rmrcd_attachment_main[i]
   editable: False
   pdf template file: response_to_motion_regarding_change_of_domicile_foc_116.pdf
   fields:
@@ -627,7 +638,7 @@ attachments:
     - do_not_agree_yes: ${do_not_agree_yes}
     - description_to_not_agree_change_of_domicile: |
         % if do_not_agree_yes:
-        ${ rmrcd_main.safe_value('description_to_not_agree_change_of_domicile') }
+        ${ rmrcd_attachment_main.safe_value('description_to_not_agree_change_of_domicile') }
         % else:
         ${ "" }
         % endif
@@ -635,8 +646,8 @@ attachments:
     - not_allow_yes: ${not_allow_yes}
     - description_2_to_not_allow_change_of_domicile: |
         % if not allow_yes:
-        ${ rmrcd_main.safe_value('description_2_to_not_allow_change_of_domicile') }
-        % elif allow_yes:
+        ${ rmrcd_attachment_main.safe_value('description_2_to_not_allow_change_of_domicile') }
+        % else:
         ${ "" }
         % endif
     - continue_parenting_time_yes: ${continue_parenting_time}
@@ -644,7 +655,7 @@ attachments:
     - modifying_the_parentingtime_order_as_follows_yes: ${modifying_the_parentingtime_order_as_follows_yes}
     - modify_parenting_time_exp: |
         % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
-        ${ rmrcd_main.safe_value('modify_parenting_time_exp') }                                                                                
+        ${ rmrcd_attachment_main.safe_value('modify_parenting_time_exp') }                                                                                
           % if agree_to_new_parenting_time == "Yes" and (len(modify_parenting_time_exp) <= 440):
           ${ other_parties[0].name } agrees to this new parenting time schedule.
           % elif agree_to_new_parenting_time == "No" and (len(modify_parenting_time_exp) <= 440):
@@ -669,4 +680,9 @@ attachments:
   variable name: rmrcd_instructions[i]
   skip undefined: True
   docx template file: rmrcd_instructions.docx
+---
+attachments:
+  variable name: rmrcd_attachment_main.addendum
+  docx template file: rmrcd_addendum.docx
+  skip undefined: True
 ---

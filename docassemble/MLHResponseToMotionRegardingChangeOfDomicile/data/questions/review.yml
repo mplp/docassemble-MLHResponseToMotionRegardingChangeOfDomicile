@@ -28,7 +28,7 @@ review:
 
   - Edit: other_parties.revisit
     button: |-
-      **The Other side of your case:**
+      **The other party in your case:**
 
       % for item in other_parties:
         ${ item }
@@ -76,6 +76,7 @@ review:
       - agree_yes
       - recompute:
         - set_agree_yes_checkbox
+        - description_to_not_agree_change_of_domicile_update
     button: |
       **Do you agree with ${ other_parties[0].name }'s request to move?** 
 
@@ -91,6 +92,8 @@ review:
     show if: agree_yes == False
   - Edit:
       - allow_yes
+      - recompute:
+        - description_2_to_not_allow_change_of_domicile_update
     button: |
       **Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?** 
 
