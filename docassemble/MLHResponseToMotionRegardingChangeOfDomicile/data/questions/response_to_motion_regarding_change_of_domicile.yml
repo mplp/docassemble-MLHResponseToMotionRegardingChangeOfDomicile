@@ -31,9 +31,8 @@ code: |
   MLH_time_min = "40"
   MLH_time_max = "60"
   MLH_form_type = "form"
-  accessible_instructions_link = "[https://michiganlegalhelp.org/node/2066](https://michiganlegalhelp.org/node/2066)"
-  resource_page_link = "[https://michiganlegalhelp.org/node/10945](https://michiganlegalhelp.org/node/10945)"
-
+  resource_page_url_only = "https://michiganlegalhelp.org/node/3973"
+  resource_page_name = "Responding to a Motion to Move with Your Children"
 ---
 code: |
   MLH_materials_included = True
@@ -69,6 +68,7 @@ mandatory: True
 code: |
   nav.set_section('review_full')
   nav.set_section("review_intro")
+  snapshot_start
   MLH_intro_landing
   intro_screen_2
   MLH_agree_terms
@@ -102,6 +102,7 @@ code: |
         MLH_outro_saving_answers
         if MLH_esign:
           signature_date
+        snapshot_download
         response_motion_re_change_of_domicile_download
     else:
        response_case_kickout
@@ -561,25 +562,16 @@ subquestion: |
 #################### Documents Start #####################
 ---
 objects:
-  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
----
-objects:
-  - al_cover: ALDocumentBundle.using(elements=[cover_sheet_template], filename="Cover Sheet -Do not file this", title="Cover Sheet (Don't file this)", enabled=True)
----
-objects:
   - rmrcd_attachment_main: ALDocument.using(title="Response to Motion Regarding Change of Domicile - FOC 116", filename="Response to Motion Regarding Change of Domicile - FOC 116.pdf", enabled=True, has_addendum=True, default_overflow_message=" (Continued in Attachment)")
 ---
 objects:
-  - rmrcd_instructions: ALDocument.using(title="Instructions for Response to Motion Regarding Change of Domicile", filename="rmrcd_instructions.docx", enabled=True, default_overflow_message=AL_DEFAULT_OVERFLOW_MESSAGE)
+  - rmrcd_instructions: ALDocument.using(title="Instructions", filename="Instructions - Do not file this", enabled=True, has_addendum=False)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[al_cover_bundle, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_instructions, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
 ---
 objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to deliver to court", enabled=True)
----
-objects:
-  - al_cover_bundle: ALDocumentBundle.using(elements=[cover_sheet_template, rmrcd_instructions], filename="Instructions - Do not file this", title="Instructions (Don't file this)", enabled=True)
 ---
 code: |
   rmrcd_attachment_main.overflow_fields['description_to_not_agree_change_of_domicile'].overflow_trigger = 840
@@ -676,10 +668,9 @@ attachments:
 ---
 attachments:
   name: rmrcd_instructions
-  filename: rmrcd_instructions.docx
   variable name: rmrcd_instructions[i]
-  skip undefined: True
   docx template file: rmrcd_instructions.docx
+  tagged pdf: True
 ---
 attachments:
   variable name: rmrcd_attachment_main.addendum
