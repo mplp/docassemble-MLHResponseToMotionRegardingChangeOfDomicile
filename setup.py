@@ -44,7 +44,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.MLHResponseToMotionRegardingChangeOfDomicile',
-      version='0.0.1',
+      version='0.0.2',
       description=('A Response to a Motion Regarding Change of Domicile for use in Michigan Family Courts'),
       long_description='# docassemble.MLHResponseToMotionRegardingChangeOfDomicile\r\n\r\nA response to a motion regarding change of domicile in Michigan\r\n\r\n## Author\r\n\r\n- Pratibha Bharti\r\n',
       long_description_content_type='text/markdown',
