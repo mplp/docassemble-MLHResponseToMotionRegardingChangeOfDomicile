@@ -16,7 +16,7 @@ review:
 
         ${ item.address.block() }
         
-        ${ item.phone_number }
+        ${ word("") if item.no_phone_number else item.phone_numbers() }
       % endfor
   - Edit:
       - user_ask_role
@@ -35,7 +35,7 @@ review:
 
         ${ item.address.block() }
         
-        ${ item.phone_number }
+        ${ word("") if item.no_phone_number else item.phone_numbers() }
       % endfor
   - note: |
       <hr>

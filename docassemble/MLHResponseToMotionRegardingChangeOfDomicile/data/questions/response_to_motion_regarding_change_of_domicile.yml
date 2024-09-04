@@ -116,7 +116,8 @@ generic object: ALIndividual
 code: |
   x.name.first
   x.address.address
-  x.phone_number
+  if x.no_phone_number:
+    x.phone_number = "Does not have phone"
   x.complete = True
 ---
 # Tells court_index which court to choose
@@ -139,24 +140,6 @@ code: |
 code: |
   other_parties.there_is_another = False
 ---
-# id: FirstScreen
-# question: |
-#   Welcome to Michigan Legal Help’s Do-It-Yourself Response to Motion Regarding Change of Domicile/Legal Residence tool.
-# subquestion: |
-#   This tool will help you prepare the forms to file a *Response to Motion Regarding Change of Domicile/Legal Residence* in Michigan.
-
-#   If there is a custody or parenting time order for your child, the other parent must get the court’s approval before moving his or her residence from Michigan.
-# continue button field: intro_screen
----
-# id: MLH_intro_landing
-# continue button field: MLH_intro_landing
-# question: |
-#   Need more help?
-# subquestion: |
-#   This tool will help you prepare forms for your legal issue without a lawyer.
-
-#   ${ MLH_GUIDE_FULL }
----
 id: intro_screen_2
 question: |
   If Your Child's Other Parent Wants to Move
@@ -177,21 +160,6 @@ subquestion: |
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
 continue button field: intro_screen_2
----
-# id: intro_screen_3
-# question: |
-#   You will be asked questions about yourself and the other parent.
-# subquestion: |
-#   On the court forms, the other party is called the moving party because they are the person filing the motion.
-
-#   You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-
-#   This tool should take you between forty minutes and one hour to finish.
-
-#   After you answer all the questions, you will be ready to download or print a *Response to Motion Regarding Change of Domicile/Legal Residence*.
-
-#   This tool will ask you questions to make sure this form is right for you, and it will use your answers to fill out the form. You’ll need to look at a copy of the most recent custody order and a copy of the other parent's *Motion Regarding Change of Domicile/Legal Residence* while you’re using this tool.
-# continue button field: intro_screen_3
 ---
 id: existing_case_kickout
 event: existing_case_kickout
@@ -339,6 +307,12 @@ subquestion: |
   ${ collapse_template(safe_contact_info) }
 fields:
   - Phone number: users[0].phone_number
+    show if:
+      variable: users[0].no_phone_number
+      is: False
+  - I do not have a phone number: users[0].no_phone_number
+    required: False
+    datatype: yesno
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 ---
@@ -388,6 +362,12 @@ question: |
   Enter ${ other_parties[0].possessive('address') }.
 fields:
   - Phone number: other_parties[0].phone_number
+    show if:
+      variable: other_parties[0].no_phone_number
+      is: False
+  - I do not know of any phone number for ${ other_parties[0] }: other_parties[0].no_phone_number
+    required: False
+    datatype: yesno
   - code: |
       other_parties[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
 continue button field: other_party_contact_information
@@ -605,18 +585,18 @@ attachments:
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
         ${ users[0].address_block() } 
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
         ${ other_parties[0].address_block() } 
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
         ${ users[0].address_block() } 
-        ${ users[0].phone_number }
+        ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
         ${ other_parties[0].address_block() } 
-        ${ other_parties[0].phone_number }
+        ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - moving party_3_yes: ${party_3_yes}
     - judgement_date: |
