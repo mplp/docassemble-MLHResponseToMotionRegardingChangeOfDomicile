@@ -71,6 +71,7 @@ code: |
   snapshot_start
   MLH_intro_landing
   intro_screen_2
+  intro_screen_3
   MLH_agree_terms
   MLH_intro_navigate_save
 
@@ -155,11 +156,19 @@ subquestion: |
 
   If your child’s other parent has filed a *Motion Regarding Change of Domicile/Legal Residence* asking the court to move, you can file a response. The court will have a hearing where the other parent can say why they want to move, and you can say if you disagree.
 
-  On the court forms, the other parent is called the **moving party** because they are the person filing the motion. You may be the plaintiff or the defendant in the family law case where you’re filing this response.
-
   To learn more about what to do if your child’s other parent wants to move with your child, read [Responding to a Motion to Change Domicile](https://michiganlegalhelp.org/resources/family/responding-motion-change-domicile).
 
 continue button field: intro_screen_2
+---
+id: intro_screen_3
+question: |
+  Your Child's Other Parent is the Moving Party
+subquestion: |
+  On the court forms, the other parent is called the **moving party** because they are the person filing the motion. 
+  
+  You may be the plaintiff **or** the defendant in the family law case where you’re filing this response.
+
+continue button field: intro_screen_3
 ---
 id: existing_case_kickout
 event: existing_case_kickout
@@ -191,14 +200,14 @@ content: |
      * Separate maintenance
      * Paternity
      * Custody
-     * Family support
+     * Child support
 ---
 id: response_case_kickout
 event: response_case_kickout
 question: |
   We’re sorry, but you cannot use this tool!
 subquestion: |
-  You can only use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) on Michigan Legal Help to find a lawyer or a legal services office near you.
+  You can use the [Guide to Legal Help](https://michiganlegalhelp.org/guide-to-legal-help) on Michigan Legal Help to find a lawyer or a legal services office near you.
 
   If you think you made a mistake, you can change the answer to this question.
 ---
@@ -435,7 +444,7 @@ fields:
   - What do you want to ask the court to do about parenting time?: continue_parenting_time_yes
     datatype: radio
     choices:
-      - Continue the current parenting-time order
+      - Continue the current parenting time order
       - Change the current parenting time order as stated in the other parent’s motion
       - Change the current parenting time order in a different way I will specify
   - Explain what you propose the new parenting time arrangements be. Use complete sentences.: modify_parenting_time_exp
@@ -455,10 +464,9 @@ fields:
 
   - note: |
       ${ collapse_template(parenting_schedule) }
-
 ---
 code: |
-  if continue_parenting_time_yes == "Continue the current parenting-time order":
+  if continue_parenting_time_yes == "Continue the current parenting time order":
     continue_parenting_time = True
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= False
@@ -491,9 +499,9 @@ code: |
 ---
 template: parenting_schedule
 subject: |
-  Parenting Time Schedules
+  More Information About Parenting Time Schedules
 content: |
-  Some Friend of the Court offices have standard parenting time schedules you can use. There are also sample parenting time schedules on the Michigan Legal Help website, including a sample long distance parenting time schedule.
+  If you need to ask for a new parenting time schedule, review the [Michigan Parenting Time Guideline](https://www.courts.michigan.gov/49422a/siteassets/court-administration/standardsguidelines/foc/pt_gdlns.pdf). It has information about creating a parenting time schedule, and sample schedules you can use as a starting place.
 ---
 id: efile note question
 question: |
