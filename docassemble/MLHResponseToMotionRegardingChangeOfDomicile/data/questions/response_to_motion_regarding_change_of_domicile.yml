@@ -97,6 +97,7 @@ code: |
         set_agree_yes_checkbox
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
+        set_allow_domicile_change
         continue_parenting_time_yes 
         nav.set_section("review_conclusion")
         MLH_outro_filing_information
@@ -430,12 +431,12 @@ fields:
       is: False
 ---
 code: |
-  if not allow_yes:
-    not_allow_yes = True
-    allow_yes = False
-  else:
+  if allow_yes:
     not_allow_yes = False
-    allow_yes = True
+  elif not allow_yes:
+    not_allow_yes = True
+
+  set_allow_domicile_change = True
 ---
 id: continue_parenting_time
 question: |

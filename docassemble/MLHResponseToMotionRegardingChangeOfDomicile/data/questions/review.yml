@@ -94,6 +94,7 @@ review:
       - allow_yes
       - recompute:
         - description_2_to_not_allow_change_of_domicile_update
+        - set_allow_domicile_change
     button: |
       **Do you want the court to allow/approve the change in domicile or legal residence that ${ other_parties[0].name } asked for in their motion?** 
 
