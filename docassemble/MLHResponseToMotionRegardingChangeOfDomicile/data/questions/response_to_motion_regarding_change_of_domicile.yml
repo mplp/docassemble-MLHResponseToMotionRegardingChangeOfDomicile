@@ -98,7 +98,7 @@ code: |
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
         set_allow_domicile_change
-        continue_parenting_time_yes 
+        continue_parenting_time 
         nav.set_section("review_conclusion")
         MLH_outro_filing_information
         MLH_outro_saving_answers
@@ -442,7 +442,7 @@ id: continue_parenting_time
 question: |
   Parenting Time
 fields:
-  - What do you want to ask the court to do about parenting time?: continue_parenting_time_yes
+  - What do you want to ask the court to do about parenting time?: continue_parenting_time
     datatype: radio
     choices:
       - Continue the current parenting time order
@@ -451,7 +451,7 @@ fields:
   - Explain what you propose the new parenting time arrangements be. Use complete sentences.: modify_parenting_time_exp
     input type: area
     show if:
-      variable: continue_parenting_time_yes
+      variable: continue_parenting_time
       is: "Change the current parenting time order in a different way I will specify"
   - Does ${ other_parties[0].name } agree to this new parenting time schedule?: agree_to_new_parenting_time
     datatype: radio
@@ -460,28 +460,30 @@ fields:
       - No
       - I don't know
     show if:
-      variable: continue_parenting_time_yes
+      variable: continue_parenting_time
       is: "Change the current parenting time order in a different way I will specify"
 
   - note: |
       ${ collapse_template(parenting_schedule) }
 ---
 code: |
-  if continue_parenting_time_yes == "Continue the current parenting time order":
-    continue_parenting_time = True
+  if continue_parenting_time == "Continue the current parenting time order":
+    continue_parenting_time_yes = True
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= False
-  elif continue_parenting_time_yes == "Change the current parenting time order as stated in the other parent’s motion":
-    continue_parenting_time = False
+  elif continue_parenting_time == "Change the current parenting time order as stated in the other parent’s motion":
+    continue_parenting_time_yes = False
     modify_parenting_time_yes = True
     modifying_the_parentingtime_order_as_follows_yes= False
   else:
-    continue_parenting_time = False
+    continue_parenting_time_yes = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
+    
+  PT_check_boxes = True
 ---
 code: |
-  if continue_parenting_time_yes != "Change the current parenting time order in a different way I will specify":
+  if continue_parenting_time != "Change the current parenting time order in a different way I will specify":
     undefine('modify_parenting_time_exp')
 
   modify_parenting_time_exp_update = True
@@ -631,11 +633,11 @@ attachments:
         % else:
         ${ "" }
         % endif
-    - continue_parenting_time_yes: ${continue_parenting_time}
+    - continue_parenting_time_yes: ${continue_parenting_time_yes}
     - modify_parenting_time_yes: ${modify_parenting_time_yes}
     - modifying_the_parentingtime_order_as_follows_yes: ${modifying_the_parentingtime_order_as_follows_yes}
     - modify_parenting_time_exp: |
-        % if continue_parenting_time_yes == "Change the current parenting time order in a different way I will specify":
+        % if continue_parenting_time == "Change the current parenting time order in a different way I will specify":
         ${ rmrcd_attachment_main.safe_value('modify_parenting_time_exp') }                                                                                
           % if agree_to_new_parenting_time == "Yes" and (len(modify_parenting_time_exp) <= 440):
           ${ other_parties[0].name } agrees to this new parenting time schedule.
