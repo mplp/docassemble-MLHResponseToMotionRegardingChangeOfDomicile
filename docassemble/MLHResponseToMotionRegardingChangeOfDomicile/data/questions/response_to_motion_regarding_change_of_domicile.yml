@@ -539,7 +539,7 @@ objects:
   - rmrcd_instructions: ALDocument.using(title="Instructions", filename="Instructions - Do not file this", enabled=True, has_addendum=False)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_instructions, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_instructions, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to deliver to court", enabled=True)
