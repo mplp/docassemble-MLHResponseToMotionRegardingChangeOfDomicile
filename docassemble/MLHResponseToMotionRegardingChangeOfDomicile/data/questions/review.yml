@@ -112,6 +112,7 @@ review:
       - continue_parenting_time_yes
       - recompute:
         - modify_parenting_time_exp_update
+        - PT_check_boxes
     button: |
       **What do you want to ask the court to do about parenting time?**
 

@@ -479,6 +479,8 @@ code: |
     continue_parenting_time = False
     modify_parenting_time_yes = False
     modifying_the_parentingtime_order_as_follows_yes= True
+    
+  PT_check_boxes = True
 ---
 code: |
   if continue_parenting_time_yes != "Change the current parenting time order in a different way I will specify":
