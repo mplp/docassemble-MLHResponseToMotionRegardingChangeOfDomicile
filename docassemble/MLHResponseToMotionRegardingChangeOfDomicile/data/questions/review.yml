@@ -5,8 +5,13 @@ question: |
   Review your answers
 review:
   - note: |
+      % if not defined('county_choice'):
+      ${ review_empty_explainer }
+      % endif
+  - note: |
       <hr>
-      ### Information for Parents and Children
+      <h2 class='h5'>Information for Parents and Children</h2>
+    show if: user_ask_role
   - Edit: users.revisit
     button: |-
       **Your Information:**
@@ -40,7 +45,8 @@ review:
   - note: |
       <hr>
 
-      ### Case and Court Information
+      <h2 class='h5'>Case and Court Information</h2>
+    show if: county_choice
   - Edit:
       - county_choice
       - recompute:
@@ -72,6 +78,10 @@ review:
       **What date was the most recent judgment entered?**
 
       ${ recent_order }
+  - note: |
+      <hr>
+      <h2 class='h5'>${ other_parties[0].name }'s Request to Move</h2>
+    show if: defined('agree_yes')
   - Edit:
       - agree_yes
       - recompute:

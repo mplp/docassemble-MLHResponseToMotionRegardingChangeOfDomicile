@@ -20,6 +20,7 @@ metadata:
 features:
   labels above fields: True
   navigation: True
+  progress bar multiplier: 0.15
 ---
 code: |
   al_form_type = "existing_case"
@@ -86,7 +87,7 @@ code: |
         county_choice
         court_index
         the_court
-        docket_numbers
+        docket_number
         user_ask_role
         prior_order_yesno
         users.gather()
@@ -246,7 +247,7 @@ subquestion: |
 
   ${ collapse_template(where_case_number) }
 fields:
-  - Case number: docket_numbers
+  - Case number: docket_number
     maxlength: 25
 
 ---
@@ -375,6 +376,7 @@ fields:
 continue button field: other_party_contact_information
 ---
 id: allow a change of domicile
+progress: 60
 question: |
   Best interests of the child or children
 fields:
@@ -431,6 +433,7 @@ code: |
   set_allow_domicile_change = True
 ---
 id: continue_parenting_time
+progress: 85
 question: |
   Parenting Time
 fields:
@@ -565,7 +568,7 @@ attachments:
         % endif
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
-    - docket_numbers: ${docket_numbers}
+    - docket_numbers: ${docket_number}
     - trial_court_phone_number: ${ the_court.phone }
     - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
     - moving_party_yes: ${moving_party_yes}
