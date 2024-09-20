@@ -27,7 +27,8 @@ code: |
 ---
 id: interview config code block
 code: |
-  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
+  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile" if get_config('debug') else "docassemble-UserFeedback"
+
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
