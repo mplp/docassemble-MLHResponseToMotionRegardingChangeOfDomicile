@@ -105,7 +105,7 @@ code: |
         if MLH_esign:
           signature_date
         snapshot_download
-        response_motion_re_change_of_domicile_download
+        MLH_download
     else:
        response_case_kickout
   else:
@@ -314,7 +314,7 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  ${ collapse_template(safe_contact_info) }
+  ${ collapse_template(confidential_address_family) }
 fields:
   - Phone number: users[0].phone_number
     show if:
@@ -325,14 +325,6 @@ fields:
     datatype: yesno
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
----
-template: safe_contact_info
-subject: |
-  What if it's **not safe** to share my contact information with the other parent?
-content: |
-  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party}.
-
-  If you don't want the ${other_party} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
 ---
 code: |
   party_3_yes = False
@@ -534,21 +526,6 @@ content: |
 
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
----
-id: DownloadScreen
-event: response_motion_re_change_of_domicile_download
-question: |
-  Get your forms
-subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-
-  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
-
-  ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
-
-  ${ al_user_bundle.download_list_html() }
-
-  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 ---
 #################### Documents Start #####################
 ---
