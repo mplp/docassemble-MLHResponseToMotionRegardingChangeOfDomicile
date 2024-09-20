@@ -5,8 +5,13 @@ question: |
   Review your answers
 review:
   - note: |
+      % if not defined('county_choice'):
+      ${ review_empty_explainer }
+      % endif
+  - note: |
       <hr>
-      ### Information for Parents and Children
+      <h2 class='h5'>Parents' Information</h2>
+    show if: user_ask_role
   - Edit: users.revisit
     button: |-
       **Your Information:**
@@ -40,7 +45,8 @@ review:
   - note: |
       <hr>
 
-      ### Case and Court Information
+      <h2 class='h5'>Case and Court Information</h2>
+    show if: county_choice
   - Edit:
       - county_choice
       - recompute:
@@ -65,13 +71,17 @@ review:
       - recent_order
       - prior_order_yesno
     button: |
-      **Is there a custody order or a judgement in your family law case?**
+      **Is there a custody order or a judgment in your family law case?**
 
       ${ word(yesno(prior_order_yesno)) }
 
       **What date was the most recent judgment entered?**
 
       ${ recent_order }
+  - note: |
+      <hr>
+      <h2 class='h5'>${ other_parties[0].name }'s Request to Move</h2>
+    show if: defined('agree_yes')
   - Edit:
       - agree_yes
       - recompute:

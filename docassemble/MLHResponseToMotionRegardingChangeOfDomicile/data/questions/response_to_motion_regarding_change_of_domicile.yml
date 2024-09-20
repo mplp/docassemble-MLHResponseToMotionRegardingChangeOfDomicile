@@ -20,13 +20,15 @@ metadata:
 features:
   labels above fields: True
   navigation: True
+  progress bar multiplier: 0.15
 ---
 code: |
   al_form_type = "existing_case"
 ---
 id: interview config code block
 code: |
-  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile"
+  github_repo_name = "docassemble-MLHResponseToMotionRegardingChangeOfDomicile" if get_config('debug') else "docassemble-UserFeedback"
+
   MLH_esign_supported = True
   MLH_time_min = "40"
   MLH_time_max = "60"
@@ -56,11 +58,11 @@ objects:
 ---
 sections:
   - review_intro: "Introduction"
-
-  - qualifying_questions: "Do you qualify?"
   - case_info: "Case Information"
+  - parent_information: "Parent Information"
+  - move_request: "The Request to Move"
   - review_parenting_time_info: "Parenting Time"
-  - review_conclusion: "Conclusion"
+  - review_conclusion: "Get Your Form"
   - review_full: "✎ <u>Review / Edit</u>"
 ---
 id: interview_order_response_to_motion_regarding_change_of_domicile
@@ -77,27 +79,28 @@ code: |
 
 
   if MLH_intro_agree_no_pii:
-    nav.set_section("qualifying_questions")
+    nav.set_section("case_info")
     if qualify_to_RMRCD:
       if third_party_check:
         third_party_kickout
       else:
-        nav.set_section("case_info")
         county_choice
         court_index
         the_court
-        docket_numbers
-        user_ask_role
+        docket_number
         prior_order_yesno
+        nav.set_section("parent_information")
+        user_ask_role
         users.gather()
         other_parties.gather()
-        nav.set_section("review_parenting_time_info")
+        nav.set_section("move_request")
         if not agree_yes:
           description_to_not_agree_change_of_domicile
         set_agree_yes_checkbox
         if not allow_yes:
           description_2_to_not_allow_change_of_domicile
         set_allow_domicile_change
+        nav.set_section("review_parenting_time_info")
         continue_parenting_time 
         nav.set_section("review_conclusion")
         MLH_outro_filing_information
@@ -105,7 +108,7 @@ code: |
         if MLH_esign:
           signature_date
         snapshot_download
-        response_motion_re_change_of_domicile_download
+        MLH_download
     else:
        response_case_kickout
   else:
@@ -246,7 +249,7 @@ subquestion: |
 
   ${ collapse_template(where_case_number) }
 fields:
-  - Case number: docket_numbers
+  - Case number: docket_number
     maxlength: 25
 
 ---
@@ -314,7 +317,7 @@ sets:
 question: |
   Your contact information
 subquestion: |
-  ${ collapse_template(safe_contact_info) }
+  ${ collapse_template(confidential_address_family) }
 fields:
   - Phone number: users[0].phone_number
     show if:
@@ -325,14 +328,6 @@ fields:
     datatype: yesno
   - code: |
       users[0].address_fields(country_code=AL_DEFAULT_COUNTRY, default_state=AL_DEFAULT_STATE, show_country=True)
----
-template: safe_contact_info
-subject: |
-  What if it's **not safe** to share my contact information with the other parent?
-content: |
-  Please enter a **SAFE** address and telephone number where the court can contact you. **DO NOT** enter an address or phone number that you want to keep confidential from the ${other_party}. The address and telephone number you enter will be part of the court file and will be on the forms that will be given to the ${other_party}.
-
-  If you don't want the ${other_party} to know your current address and phone number, you can use a post office box or the address and telephone number of a relative or friend who has agreed to let you do this.
 ---
 code: |
   party_3_yes = False
@@ -383,6 +378,7 @@ fields:
 continue button field: other_party_contact_information
 ---
 id: allow a change of domicile
+progress: 60
 question: |
   Best interests of the child or children
 fields:
@@ -439,6 +435,7 @@ code: |
   set_allow_domicile_change = True
 ---
 id: continue_parenting_time
+progress: 85
 question: |
   Parenting Time
 fields:
@@ -535,21 +532,6 @@ content: |
   Look for the two-letter case type code at the end of your case number.
   (This could be DM, DC, DS, DP, or a different code.)
 ---
-id: DownloadScreen
-event: response_motion_re_change_of_domicile_download
-question: |
-  Get your forms
-subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-
-  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
-
-  ${ action_button_html(url_action('review_full'), label='Edit answers', color='info') }
-
-  ${ al_user_bundle.download_list_html() }
-
-  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
----
 #################### Documents Start #####################
 ---
 objects:
@@ -559,7 +541,7 @@ objects:
   - rmrcd_instructions: ALDocument.using(title="Instructions", filename="Instructions - Do not file this", enabled=True, has_addendum=False)
 ---
 objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_instructions, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to download for your records", enabled=True)
+  - al_user_bundle: ALDocumentBundle.using(elements=[rmrcd_instructions, rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms and instructions", enabled=True)
 ---
 objects:
   - al_court_bundle: ALDocumentBundle.using(elements=[rmrcd_attachment_main], filename="Response to Motion Regarding Change of Domicile (All Forms).pdf", title="All forms to deliver to court", enabled=True)
@@ -588,7 +570,7 @@ attachments:
         % endif
     - trial_court: ${ the_court.number }
     - trial_court_county: ${ county_choice.upper() }
-    - docket_numbers: ${docket_numbers}
+    - docket_numbers: ${docket_number}
     - trial_court_phone_number: ${ the_court.phone }
     - trial_court_address_on_one_line: ${ the_court.address.on_one_line() }
     - moving_party_yes: ${moving_party_yes}
