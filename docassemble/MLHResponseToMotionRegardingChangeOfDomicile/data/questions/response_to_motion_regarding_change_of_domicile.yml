@@ -7,9 +7,10 @@ include:
 metadata:
   title: Response to Motion Regarding Change of Domicile
   short title: Response to Change of Domicile Motion
-  subtitle: Helps you write a motion asking the court to allow a change in where your child lives.
+  subtitle: |
+    Respond to a request by your child's other parent to change where your child lives.
   description: |
-    If there is a custody or parenting time order for your child, you must get the court’s approval before moving his or her domicile from Michigan.
+    A tool for helping Michigan parents respond to a request by their child's other parent to change where the child lives.
   tags:
     - "Family"
     - "Domicile"
