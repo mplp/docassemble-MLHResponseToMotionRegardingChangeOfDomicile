@@ -51,9 +51,7 @@ review:
       - county_choice
       - recompute:
           - the_court
-          - recompute_court
           - court_index
-          - court_count
     button: |
       **Court Information:**
 
@@ -145,13 +143,4 @@ review:
       ${ agree_to_new_parenting_time }
       % endif
     show if: continue_parenting_time == 'Change the current parenting time order in a different way I will specify'
----
-reconsider: True
-code: |
-  if court_count > 1:
-    court_index = court_index_for_specific_court_type
-  else:
-    # This means there is only one court of this type for this county.
-    court_index = list(court_list.filter_courts_by_2([county_choice], [court_type], column_1='address_county', column_2='type'))[0][0]
-  recompute_court = True
 ---
