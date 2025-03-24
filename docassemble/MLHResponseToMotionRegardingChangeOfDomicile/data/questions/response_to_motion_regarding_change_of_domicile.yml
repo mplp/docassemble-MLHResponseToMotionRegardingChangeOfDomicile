@@ -139,6 +139,7 @@ code: |
 # for framework court loader logic
 code: |
   filing_court = "circuit_only"
+  ottawa_circuit_location = "West Olive"
 ---
 code: |
   other_parties[i].name.first
