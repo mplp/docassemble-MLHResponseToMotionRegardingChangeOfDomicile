@@ -1,0 +1,27 @@
+[build-system]
+requires = [
+    "setuptools==80.9.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docassemble.MLHResponseToMotionRegardingChangeOfDomicile"
+version = "1.0.6"
+description = "A Response to a Motion Regarding Change of Domicile for use in Michigan Family Courts"
+readme = "README.md"
+authors = [
+    { name = "Michigan Poverty Law Program", email = "michiganlegalhelp@mplp.org" },
+]
+dependencies = []
+license = "MIT"
+license-files = [
+    "LICENSE",
+]
+
+[project.urls]
+Homepage = "https://michiganlegalhelp.org/resources/family/do-it-yourself-motion-change-domicile-response"
+
+[tool.setuptools.packages.find]
+where = [
+    ".",
+]
