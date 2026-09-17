@@ -311,7 +311,7 @@ fields:
   - no label: prior_order_yesno
     datatype: yesnoradio
   - What is the date of the most recent custody order or judgment?: recent_order
-    datatype: date
+    datatype: ThreePartsDate
     show if: prior_order_yesno
 
 ---
