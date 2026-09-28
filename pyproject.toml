@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docassemble.MLHResponseToMotionRegardingChangeOfDomicile"
-version = "1.0.6"
+version = "1.0.7"
 description = "A Response to a Motion Regarding Change of Domicile for use in Michigan Family Courts"
 readme = "README.md"
 authors = [
