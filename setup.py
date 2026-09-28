@@ -44,7 +44,7 @@ def find_package_data(where='.', package='', exclude=standard_exclude, exclude_d
     return out
 
 setup(name='docassemble.MLHResponseToMotionRegardingChangeOfDomicile',
-      version='1.0.6',
+      version='1.0.7',
       description=('A Response to a Motion Regarding Change of Domicile for use in Michigan Family Courts'),
       long_description='# docassemble.MLHResponseToMotionRegardingChangeOfDomicile\r\n\r\nA response to a motion regarding change of domicile in Michigan\r\n\r\n## Author\r\n- Pratibha Bharti\r\n- Emily Kress Miller\r\n- Rami Lorca\r\n\r\n## Changelog\r\n* 12/12/25 1.0.6 updated embedded survey; update instructions font\r\n* 2/13/25  1.0.5 Behind-the-scenes court logic adjustment\r\n* 9/30/24  1.0.4 update user survey\r\n* 9/25/24  1.0.3 fix instructions header issue\r\n* 9/25/24  1.0.2 Fix italics issue\r\n* 9/25/24  1.0.1 edit subtitle and description\r\n* 9/20/24  1.0.0 Preparing to launch',
       long_description_content_type='text/markdown',

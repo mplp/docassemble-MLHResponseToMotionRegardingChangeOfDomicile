@@ -8,6 +8,7 @@ A response to a motion regarding change of domicile in Michigan
 - Rami Lorca
 
 ## Changelog
+* 9/28/26. 1.0.7 Incorporated ThreePartsDate datatype.
 * 12/12/25 1.0.6 updated embedded survey; update instructions font
 * 2/13/25  1.0.5 Behind-the-scenes court logic adjustment
 * 9/30/24  1.0.4 update user survey
