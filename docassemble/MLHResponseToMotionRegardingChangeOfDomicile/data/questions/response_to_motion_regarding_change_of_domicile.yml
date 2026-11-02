@@ -587,18 +587,22 @@ attachments:
     - moving_party2_yes: ${moving_party2_yes}
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
-        ${ users[0].address_block() } 
+        ${ users[0].name_full() }
+        ${ users[0].address.block() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
-        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].name_full() }
+        ${ other_parties[0].address.block() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
-        ${ users[0].address_block() } 
+        ${ users[0].name_full() }
+        ${ users[0].address.block() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
-        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].name_full() }
+        ${ other_parties[0].address.block() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - moving party_3_yes: ${party_3_yes}
