@@ -10,7 +10,7 @@ review:
       % endif
   - note: |
       <hr>
-      ## Parents' Information
+      <h2 class='h5'>Parents' Information</h2>
     show if: user_ask_role
   - Edit: users.revisit
     button: |-
@@ -45,7 +45,7 @@ review:
   - note: |
       <hr>
 
-      ## Case and Court Information
+      <h2 class='h5'>Case and Court Information</h2>
     show if: county_choice
   - Edit:
       - county_choice
@@ -78,7 +78,7 @@ review:
       ${ recent_order }
   - note: |
       <hr>
-      ## ${ other_parties[0].name }'s Request to Move
+      <h2 class='h5'>${ other_parties[0].name }'s Request to Move</h2>
     show if: defined('agree_yes')
   - Edit:
       - agree_yes
