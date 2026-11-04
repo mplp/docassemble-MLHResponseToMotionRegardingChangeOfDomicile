@@ -40,12 +40,6 @@ code: |
 code: |
   survey_link_url_only = "https://www.surveymonkey.com/r/WFMXDVQ"
 ---
-template: survey_embed_script
-content: |
-  <script>
-    (function(t,e,s,n){var o,a,c;t.SMCX=t.SMCX||[],e.getElementById(n)||(o=e.getElementsByTagName(s),a=o[o.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=n,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgd8qZ8ON_2FyjUqTzYvfSuztE6JyOqjQzo0oGlDOzLTrsXp.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");
-  </script>
----
 code: |
   MLH_materials_included = True
 ---
@@ -587,18 +581,26 @@ attachments:
     - moving_party2_yes: ${moving_party2_yes}
     - plaintiffs_address_block: |
         % if user_ask_role == "plaintiff":
-        ${ users[0].address_block() } 
+        ${ users[0].name_full() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "defendant":
-        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].name_full() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - defendants_address_block: |
         % if user_ask_role == "defendant":
-        ${ users[0].address_block() } 
+        ${ users[0].name_full() }
+        ${ users[0].address.line_one() }
+        ${ users[0].address.line_two() }
         ${ word("") if users[0].no_phone_number else users[0].phone_numbers() }
         % elif user_ask_role == "plaintiff":
-        ${ other_parties[0].address_block() } 
+        ${ other_parties[0].name_full() }
+        ${ other_parties[0].address.line_one() }
+        ${ other_parties[0].address.line_two() }
         ${ word("") if other_parties[0].no_phone_number else other_parties[0].phone_numbers() }
         % endif
     - moving party_3_yes: ${party_3_yes}
