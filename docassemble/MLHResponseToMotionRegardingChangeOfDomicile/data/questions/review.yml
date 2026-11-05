@@ -12,7 +12,9 @@ review:
       <hr>
       ## Parents' Information
     show if: user_ask_role
-  - Edit: users.revisit
+  - Edit:
+      - users[0].name.first
+      - users[0].address.address
     button: |-
       **Your Information:**
 
@@ -31,7 +33,9 @@ review:
 
       ${ showifdef('user_ask_role').capitalize() }
 
-  - Edit: other_parties.revisit
+  - Edit:
+      - other_parties[0].name.first
+      - other_parties[0].address.address
     button: |-
       **The other party in your case:**
 
